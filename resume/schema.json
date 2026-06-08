@@ -1,0 +1,67 @@
+{
+  "template": "resume",
+  "version": "1.0.0",
+  "fields": {
+    "name": { "type": "string", "required": true, "description": "姓名", "placeholder": "{{NAME}}" },
+    "title": { "type": "string", "required": true, "description": "职位头衔", "placeholder": "{{TITLE}}" },
+    "tagline": { "type": "string", "required": false, "description": "一句话标语", "placeholder": "{{TAGLINE}}" },
+    "bio": { "type": "string", "required": true, "description": "个人简介", "placeholder": "{{BIO}}" },
+    "photo_url": { "type": "string", "required": false, "description": "头像图片 URL 或 base64", "placeholder": "{{PHOTO}}" },
+    "tags": {
+      "type": "array",
+      "required": false,
+      "description": "技能标签列表",
+      "items": { "type": "string" },
+      "default": ["UI/UX 设计", "前端开发", "品牌设计", "动效设计", "用户体验"]
+    },
+    "experience": {
+      "type": "array",
+      "required": true,
+      "description": "工作经历",
+      "minItems": 1,
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "fields": {
+          "period": { "type": "string", "required": true, "example": "2022 — 至今" },
+          "role": { "type": "string", "required": true, "example": "高级前端工程师" },
+          "company": { "type": "string", "required": true, "example": "字节跳动" },
+          "description": { "type": "string", "required": true, "example": "负责核心产品的前端架构设计..." }
+        }
+      }
+    },
+    "skills": {
+      "type": "array",
+      "required": false,
+      "description": "专业技能列表",
+      "items": {
+        "type": "object",
+        "fields": {
+          "name": { "type": "string", "required": true, "example": "React / Vue" },
+          "level": { "type": "number", "required": true, "min": 0, "max": 100, "example": 90 },
+          "icon": { "type": "string", "required": false, "example": "⚡" }
+        }
+      }
+    },
+    "contact": {
+      "type": "object",
+      "required": true,
+      "fields": {
+        "email": { "type": "string", "required": false, "example": "hello@example.com" },
+        "phone": { "type": "string", "required": false, "example": "+86 138-0013-8000" },
+        "socials": {
+          "type": "array",
+          "required": false,
+          "items": {
+            "type": "object",
+            "fields": {
+              "name": { "type": "string", "example": "GitHub" },
+              "url": { "type": "string", "example": "https://github.com" },
+              "icon": { "type": "string", "example": "💻" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

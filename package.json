@@ -1,0 +1,16 @@
+{
+  "name": "vbsite",
+  "version": "0.1.0",
+  "private": true,
+  "description": "高动效、高定制化静态网页定制与托管服务",
+  "scripts": {
+    "dev": "npx serve . -p 3000",
+    "build": "node scripts/build.js",
+    "build:resume": "node scripts/build.js --template resume",
+    "build:portfolio": "node scripts/build.js --template portfolio"
+  },
+  "devDependencies": {
+    "html-minifier-terser": "^7.2.0",
+    "serve": "^14.2.4"
+  }
+}

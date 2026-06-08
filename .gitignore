@@ -1,0 +1,8 @@
+node_modules/
+clients/*
+!clients/.gitkeep
+.DS_Store
+*.log
+.env
+.env.local
+.playwright-mcp/
