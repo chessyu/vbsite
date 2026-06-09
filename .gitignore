@@ -1,4 +1,5 @@
 node_modules/
+dist/
 clients/*
 !clients/.gitkeep
 .DS_Store
@@ -6,3 +7,4 @@ clients/*
 .env
 .env.local
 .playwright-mcp/
+package-lock.json
