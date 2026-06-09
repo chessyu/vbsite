@@ -55,7 +55,7 @@ export default function PortfolioPage() {
       {/* Hero */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <Aurora colorStops={['#f59e0b33', '#ec489933', '#8b5cf633']} amplitude={0.8} speed={0.5} blend={0.4} />
+          <Aurora colorStops={['#f59e0b', '#ec4899', '#8b5cf6']} amplitude={0.8} speed={0.5} blend={0.4} />
         </div>
         <div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
           <AnimatedContent direction="vertical" distance={20}>
