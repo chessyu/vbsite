@@ -24,6 +24,13 @@ export function useVideoLoader(src: string | undefined, bytes: number | undefine
 
   useEffect(() => {
     if (!src) return
+    // blob: URL（admin 编辑会话预览）本身就是本地引用，无需 fetch。
+    // 异步 setState 避开 effect 内同步级联渲染。
+    if (src.startsWith('blob:')) {
+      const url = src
+      const timer = setTimeout(() => setStatus({ state: 'ready', url }), 0)
+      return () => clearTimeout(timer)
+    }
     let cancelled = false
     let objectUrl: string | null = null
     const controller = new AbortController()

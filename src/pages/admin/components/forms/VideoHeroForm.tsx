@@ -44,11 +44,13 @@ export function VideoHeroForm({ data, userId, token, onChange }: {
         token={token}
         value={data.video.url}
         posterValue={data.poster}
-        onChange={({ url, bytes, posterUrl }) =>
+        onChange={({ url, bytes, posterUrl, previewUrl, posterPreviewUrl }) =>
           onChange(d => ({
             ...d,
-            video: { url, bytes: bytes || undefined },
-            ...(posterUrl && !d.poster ? { poster: posterUrl } : {}),
+            // previewUrl = 会话内 blob 预览（发布时由 publish 端点剥离）
+            video: { url, bytes: bytes || undefined, previewUrl: previewUrl || undefined },
+            ...(posterUrl ? { poster: posterUrl } : {}),
+            ...(posterPreviewUrl ? { posterPreviewUrl } : {}),
           }))
         }
       />
@@ -82,47 +84,69 @@ export function VideoHeroForm({ data, userId, token, onChange }: {
           position: 'center',
           size: 'lg',
         })}
-        itemTitle={item => item.text.slice(0, 14) || '未命名'}
+        itemSummary={(item, i) => `${i + 1}. ${item.text.slice(0, 20) || '未命名'}`}
+        renderSummaryExtra={item => {
+          const paceVh = (item.to - item.from) * heightVh
+          return (
+            <span
+              className={`shrink-0 rounded-full px-1.5 py-0.5 text-[10px] tabular-nums ${
+                paceVh < READABLE_VH ? 'bg-amber-100 text-amber-700' : 'bg-stone-200 text-stone-500'
+              }`}
+              title={paceVh < READABLE_VH ? '短于可读平台（建议 ≥80vh），快速滚动时可能一闪而过' : '滚动距离'}
+            >
+              {paceLabel(item, heightVh)}
+              {paceVh < READABLE_VH ? ' ⚠' : ''}
+            </span>
+          )
+        }}
         renderItem={(item, update) => {
           const paceVh = (item.to - item.from) * heightVh
           return (
-            <div className="space-y-2">
-              <TextField label="文案" value={item.text} onChange={v => update({ text: v })} />
-              <TextField label="胶囊小字（可空，显示在文案上方）" value={item.kicker ?? ''} onChange={v => update({ kicker: v || undefined })} />
-              <div className="grid grid-cols-2 gap-2">
-                <NumberField label="区间起点" value={item.from} min={0} max={0.95} step={0.01} onChange={v => update({ from: Math.min(v, item.to - 0.02) })} />
-                <NumberField label="区间终点" value={item.to} min={0.05} max={1} step={0.01} onChange={v => update({ to: Math.max(v, item.from + 0.02) })} />
+            <div className="space-y-3">
+              {/* 内容组 */}
+              <div className="space-y-2">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-stone-400">内容</p>
+                <TextField label="文案" value={item.text} onChange={v => update({ text: v })} />
+                <TextField label="胶囊小字（可空）" value={item.kicker ?? ''} onChange={v => update({ kicker: v || undefined })} />
               </div>
-              <div className={`text-[11px] ${paceVh < READABLE_VH ? 'text-amber-600' : 'text-stone-400'}`}>
-                占 {paceLabel(item, heightVh)} 滚动距离
-                {paceVh < READABLE_VH && ' ⚠️ 短于可读平台（建议 ≥80vh），快速滚动时可能一闪而过'}
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <label className="block">
-                  <span className="mb-1 block text-xs font-medium text-stone-600">屏幕位置</span>
-                  <select
-                    value={item.position}
-                    onChange={e => update({ position: e.target.value as Caption['position'] })}
-                    className="w-full rounded-lg border border-stone-300 bg-white px-2.5 py-1.5 text-sm text-stone-800"
-                  >
-                    <option value="center">居中</option>
-                    <option value="left">左侧</option>
-                    <option value="right">右侧</option>
-                    <option value="bottom">底部</option>
-                  </select>
-                </label>
-                <label className="block">
-                  <span className="mb-1 block text-xs font-medium text-stone-600">字号</span>
-                  <select
-                    value={item.size}
-                    onChange={e => update({ size: e.target.value as Caption['size'] })}
-                    className="w-full rounded-lg border border-stone-300 bg-white px-2.5 py-1.5 text-sm text-stone-800"
-                  >
-                    <option value="lg">大（主叙事）</option>
-                    <option value="md">中</option>
-                    <option value="sm">小（注解）</option>
-                  </select>
-                </label>
+              {/* 出现时机组 */}
+              <div className="space-y-2 border-t border-stone-200 pt-2">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-stone-400">出现时机</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <NumberField label="区间起点" value={item.from} min={0} max={0.95} step={0.01} onChange={v => update({ from: Math.min(v, item.to - 0.02) })} />
+                  <NumberField label="区间终点" value={item.to} min={0.05} max={1} step={0.01} onChange={v => update({ to: Math.max(v, item.from + 0.02) })} />
+                </div>
+                <div className={`text-[11px] ${paceVh < READABLE_VH ? 'text-amber-600' : 'text-stone-400'}`}>
+                  占 {paceLabel(item, heightVh)} 滚动距离
+                  {paceVh < READABLE_VH && ' ⚠️ 短于可读平台（建议 ≥80vh）'}
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <label className="block">
+                    <span className="mb-1 block text-xs font-medium text-stone-600">屏幕位置</span>
+                    <select
+                      value={item.position}
+                      onChange={e => update({ position: e.target.value as Caption['position'] })}
+                      className="w-full rounded-lg border border-stone-300 bg-white px-2.5 py-1.5 text-sm text-stone-800"
+                    >
+                      <option value="center">居中</option>
+                      <option value="left">左侧</option>
+                      <option value="right">右侧</option>
+                      <option value="bottom">底部</option>
+                    </select>
+                  </label>
+                  <label className="block">
+                    <span className="mb-1 block text-xs font-medium text-stone-600">字号</span>
+                    <select
+                      value={item.size}
+                      onChange={e => update({ size: e.target.value as Caption['size'] })}
+                      className="w-full rounded-lg border border-stone-300 bg-white px-2.5 py-1.5 text-sm text-stone-800"
+                    >
+                      <option value="lg">大（主叙事）</option>
+                      <option value="md">中</option>
+                      <option value="sm">小（注解）</option>
+                    </select>
+                  </label>
+                </div>
               </div>
             </div>
           )

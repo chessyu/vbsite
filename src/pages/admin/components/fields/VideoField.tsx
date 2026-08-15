@@ -9,8 +9,10 @@ export interface VideoFieldResult {
   bytes: number
   /** 上传后的海报图路径 */
   posterUrl: string
-  /** 会话内预览（本地 blob URL 或已上传路径） */
+  /** 会话内视频预览（本地 blob URL） */
   previewUrl: string
+  /** 会话内海报预览（本地 blob URL） */
+  posterPreviewUrl: string
 }
 
 type Phase =
@@ -78,11 +80,13 @@ export function VideoField({ label, hint, userId, token, value, onChange, poster
 
       // 3. 回填（会话内用本地 blob 预览，远端文件刚 commit 还未部署）
       const localPreview = URL.createObjectURL(video)
+      const localPosterPreview = URL.createObjectURL(poster)
       onChange({
         url: videoUploaded?.path ?? '',
         bytes: videoUploaded?.bytes ?? video.size,
         posterUrl: posterUploaded?.path ?? posterValue,
         previewUrl: localPreview,
+        posterPreviewUrl: localPosterPreview,
       })
       setPreviewUrl(localPreview)
       setPhase({ stage: 'done', previewUrl: localPreview })
@@ -165,7 +169,7 @@ export function VideoField({ label, hint, userId, token, value, onChange, poster
                 type="button"
                 onClick={() => {
                   if (confirmClear) {
-                    onChange({ url: '', bytes: 0, posterUrl: posterValue, previewUrl: '' })
+                    onChange({ url: '', bytes: 0, posterUrl: posterValue, previewUrl: '', posterPreviewUrl: '' })
                     setPreviewUrl(null)
                     setConfirmClear(false)
                     setPhase({ stage: 'idle' })

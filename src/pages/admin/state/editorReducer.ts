@@ -23,6 +23,7 @@ export type EditorAction =
   | { type: 'SET_THEME'; patch: Partial<SpaceConfig['theme']> }
   | { type: 'SET_PAGE_META'; pageIdx: number; patch: Partial<SpaceConfig['pages'][number]> }
   | { type: 'MOVE_BLOCK'; pageIdx: number; blockIdx: number; dir: -1 | 1 }
+  | { type: 'REORDER_BLOCKS'; pageIdx: number; blocks: BlockDeclaration[] }
   | { type: 'ADD_BLOCK'; pageIdx: number; blockType: BlockType }
   | { type: 'REMOVE_BLOCK'; pageIdx: number; blockIdx: number }
   | { type: 'UPDATE_BLOCK_DATA'; pageIdx: number; blockIdx: number; updater: (data: Record<string, unknown>) => Record<string, unknown> }
@@ -59,6 +60,13 @@ export function editorReducer(state: EditorState | null, action: EditorAction): 
     case 'SET_PAGE_META': {
       const pages = state.draft.pages.map((page, i) =>
         i === action.pageIdx ? { ...page, ...action.patch } : page,
+      )
+      return { ...state, draft: { ...state.draft, pages } }
+    }
+
+    case 'REORDER_BLOCKS': {
+      const pages = state.draft.pages.map((page, i) =>
+        i === action.pageIdx ? { ...page, blocks: action.blocks } : page,
       )
       return { ...state, draft: { ...state.draft, pages } }
     }

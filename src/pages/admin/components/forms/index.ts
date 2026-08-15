@@ -51,3 +51,16 @@ export const blockTypeLabels: Record<BlockType, string> = {
   services: '服务卡片',
   contact: '联系方式',
 }
+
+/** 区块类型图标（列表与下拉菜单共用） */
+export const blockTypeIcons: Record<BlockType, string> = {
+  hero: '🚀',
+  'video-hero': '🎬',
+  about: '👤',
+  experience: '💼',
+  skills: '⭐',
+  gallery: '🖼️',
+  'featured-project': '🏆',
+  services: '✨',
+  contact: '📮',
+}

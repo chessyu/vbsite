@@ -47,11 +47,15 @@ export function VideoHeroBlockComponent({ data }: BlockProps<VideoHeroBlockData>
   const d = data
   const isCinematic = useIsCinematic()
 
-  // 电影模式下才加载视频（降级档 0 视频字节）
+  // 电影模式下才加载视频（降级档 0 视频字节）。
+  // 会话内 blob 预览优先（远端路径刚上传还未部署，fetch 必 404）。
+  const videoSrc = d.video.previewUrl || d.video.url
   const videoStatus = useVideoLoader(
-    isCinematic ? d.video.url : undefined,
-    isCinematic ? d.video.bytes : undefined,
+    isCinematic ? videoSrc : undefined,
+    isCinematic && !videoSrc?.startsWith('blob:') ? d.video.bytes : undefined,
   )
+  // 海报同样会话内 blob 预览优先
+  const posterSrc = d.posterPreviewUrl || d.poster
 
   const trackRef = useRef<HTMLDivElement>(null)
   const stageRef = useRef<HTMLDivElement>(null)
@@ -132,8 +136,8 @@ export function VideoHeroBlockComponent({ data }: BlockProps<VideoHeroBlockData>
     return (
       <section className="relative min-h-screen overflow-hidden bg-stone-900">
         {/* 海报底图（为空时纯深色底，避免 img src="" 警告） */}
-        {d.poster ? (
-          <img src={d.poster} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover" />
+        {posterSrc ? (
+          <img src={posterSrc} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover" />
         ) : (
           <div className="absolute inset-0 bg-gradient-to-br from-stone-900 via-stone-800 to-warm-900/40" />
         )}
@@ -161,10 +165,10 @@ export function VideoHeroBlockComponent({ data }: BlockProps<VideoHeroBlockData>
     <div ref={trackRef} style={{ height: `${d.heightVh}vh` }} className="relative">
       <div ref={stageRef} className="sticky top-0 h-[100svh] overflow-hidden">
         {/* 层1：海报（视频未就绪/加载中的底；为空时深色渐变底） */}
-        {d.poster ? (
+        {posterSrc ? (
           <img
             ref={posterRef}
-            src={d.poster}
+            src={posterSrc}
             alt=""
             aria-hidden
             className="absolute inset-0 h-full w-full object-cover transition-opacity duration-700"

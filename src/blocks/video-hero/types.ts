@@ -21,12 +21,19 @@ export const videoSourceSchema = z.object({
   url: z.string().min(1),
   /** 文件字节数（上传时记录；前端据此决定直接 fetch 还是流式下载 + 进度环） */
   bytes: z.number().optional(),
+  /**
+   * 会话内 blob 预览 URL（admin 编辑器刚上传、远端路径尚未部署时使用）。
+   * 会话级数据：publish 端点发布前剥离，不写入 space.json。
+   */
+  previewUrl: z.string().optional(),
 })
 
 export const videoHeroBlockDataSchema = z.object({
   video: videoSourceSchema,
   /** 海报图（静态降级与视频未就绪时的底图） */
   poster: z.string().min(1),
+  /** 海报的会话内 blob 预览（同理 video.previewUrl，发布前剥离） */
+  posterPreviewUrl: z.string().optional(),
   /** 滚动轨道高度（vh），默认 400 */
   heightVh: z.number().int().min(200).max(800).default(400),
   /** 字幕带 */
