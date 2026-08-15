@@ -12,4 +12,9 @@ package-lock.json
 
 # AI agent skills (本地工具产物，勿提交)
 .agents/
+10k-websites/
+skills-lock.json
+
+# wrangler 本地开发状态缓存
+.wrangler/
 
