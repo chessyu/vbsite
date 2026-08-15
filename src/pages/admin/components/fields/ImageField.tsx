@@ -27,7 +27,7 @@ export function ImageField({ label, hint, userId, token, value, onChange }: {
       const { spaceApi } = await import('@/lib/admin/api')
       const { files } = await spaceApi.uploadAssets(userId, [file], token)
       onChange(files[0].path)
-      setSessionPreview(files[0].dataUrl)
+      setSessionPreview(files[0].dataUrl ?? null)
     } catch (err) {
       setError(err instanceof Error ? err.message : '上传失败')
     } finally {

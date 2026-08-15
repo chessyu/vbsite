@@ -117,6 +117,7 @@ https://xxxxx.com/demi        → 客户 demi 的定制页面
 ```
 vbsite/
 ├── CLAUDE.md                  # 本文件 — AI 项目上下文
+├── docs/                      # 面向人的文档（admin 使用指南等，非技术读者）
 ├── functions/                 # Cloudflare Pages Functions（/api/* 服务端：鉴权/GitHub 提交/资源上传）
 ├── src/
 │   ├── CLAUDE.md              # src 模块总览
