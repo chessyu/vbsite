@@ -1,0 +1,230 @@
+import React, { useRef, useEffect, useState } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { SplitText as GSAPSplitText } from 'gsap/SplitText';
+import { useGSAP } from '@gsap/react';
+
+gsap.registerPlugin(ScrollTrigger, GSAPSplitText, useGSAP);
+
+export interface SplitTextProps {
+  text: string;
+  className?: string;
+  delay?: number;
+  duration?: number;
+  ease?: string | ((t: number) => number);
+  splitType?: 'chars' | 'words' | 'lines' | 'words, chars';
+  /** GSAP SplitText 原生遮罩：每个分割单元包一层 overflow-hidden 容器（用于 yPercent 遮罩揭示） */
+  mask?: 'chars' | 'words' | 'lines';
+  from?: gsap.TweenVars;
+  to?: gsap.TweenVars;
+  threshold?: number;
+  rootMargin?: string;
+  tag?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span';
+  textAlign?: React.CSSProperties['textAlign'];
+  onLetterAnimationComplete?: () => void;
+}
+
+const SplitText: React.FC<SplitTextProps> = ({
+  text,
+  className = '',
+  delay = 50,
+  duration = 1.25,
+  ease = 'power3.out',
+  splitType = 'chars',
+  mask,
+  from = { opacity: 0, y: 40 },
+  to = { opacity: 1, y: 0 },
+  threshold = 0.1,
+  rootMargin = '-100px',
+  tag = 'p',
+  textAlign = 'center',
+  onLetterAnimationComplete
+}) => {
+  const ref = useRef<HTMLParagraphElement>(null);
+  const animationCompletedRef = useRef(false);
+  const onCompleteRef = useRef(onLetterAnimationComplete);
+  const [fontsLoaded, setFontsLoaded] = useState<boolean>(false);
+
+  // Keep callback ref updated
+  useEffect(() => {
+    onCompleteRef.current = onLetterAnimationComplete;
+  }, [onLetterAnimationComplete]);
+
+  useEffect(() => {
+    if (document.fonts.status === 'loaded') {
+      setFontsLoaded(true);
+    } else {
+      document.fonts.ready.then(() => {
+        setFontsLoaded(true);
+      });
+    }
+  }, []);
+
+  useGSAP(
+    () => {
+      if (!ref.current || !text || !fontsLoaded) return;
+      // Prevent re-animation if already completed
+      if (animationCompletedRef.current) return;
+      const el = ref.current as HTMLElement & {
+        _rbsplitInstance?: GSAPSplitText;
+      };
+
+      if (el._rbsplitInstance) {
+        try {
+          el._rbsplitInstance.revert();
+        } catch (_) {}
+        el._rbsplitInstance = undefined;
+      }
+
+      const startPct = (1 - threshold) * 100;
+      const marginMatch = /^(-?\d+(?:\.\d+)?)(px|em|rem|%)?$/.exec(rootMargin);
+      const marginValue = marginMatch ? parseFloat(marginMatch[1]) : 0;
+      const marginUnit = marginMatch ? marginMatch[2] || 'px' : 'px';
+      const sign =
+        marginValue === 0
+          ? ''
+          : marginValue < 0
+            ? `-=${Math.abs(marginValue)}${marginUnit}`
+            : `+=${marginValue}${marginUnit}`;
+      const start = `top ${startPct}%${sign}`;
+      let targets: Element[] = [];
+      const assignTargets = (self: GSAPSplitText) => {
+        if (splitType.includes('chars') && (self as GSAPSplitText).chars?.length)
+          targets = (self as GSAPSplitText).chars;
+        if (!targets.length && splitType.includes('words') && self.words.length) targets = self.words;
+        if (!targets.length && splitType.includes('lines') && self.lines.length) targets = self.lines;
+        if (!targets.length) targets = self.chars || self.words || self.lines;
+      };
+      const splitInstance = new GSAPSplitText(el, {
+        type: splitType,
+        mask,
+        smartWrap: true,
+        autoSplit: splitType === 'lines',
+        linesClass: 'split-line',
+        wordsClass: 'split-word',
+        charsClass: 'split-char',
+        reduceWhiteSpace: false,
+        onSplit: (self: GSAPSplitText) => {
+          assignTargets(self);
+
+          // 三档 matchMedia 降级（与 AnimatedContent 策略对齐）：
+          // isDesktop 全特效；isMobile 时长/延迟减半；reduce 直接终态直出。
+          const mm = gsap.matchMedia()
+          mm.add(
+            {
+              isDesktop: '(min-width: 768px) and (prefers-reduced-motion: no-preference)',
+              isMobile: '(min-width: 0px) and (prefers-reduced-motion: no-preference)',
+              reduce: '(prefers-reduced-motion: reduce)',
+            },
+            (ctx) => {
+              if (ctx.conditions?.reduce) {
+                gsap.set(targets, { ...to })
+                animationCompletedRef.current = true
+                return
+              }
+              const isMobile = !!ctx.conditions?.isMobile
+              const playAndMark = () => {
+                gsap.fromTo(
+                  targets,
+                  { ...from },
+                  {
+                    ...to,
+                    duration: isMobile ? duration / 2 : duration,
+                    ease,
+                    stagger: (isMobile ? delay / 2000 : delay / 1000),
+                    onComplete: () => {
+                      animationCompletedRef.current = true
+                      onCompleteRef.current?.()
+                    },
+                    willChange: 'transform, opacity',
+                    force3D: true,
+                  },
+                )
+              }
+
+              // 元素当前是否已进入「应播放」的位置（含跳滚/刷新后已在视口的场景）。
+              // 用此判断替代纯 once scrollTrigger，避免瞬间跳滚错过 scroll 事件导致
+              // 文字永久卡在 from 初始态（opacity:0）。
+              const isAlreadyActive = () => {
+                const rect = el.getBoundingClientRect()
+                const vh = window.innerHeight
+                // start 默认 'top 90%'：元素顶部到达视口 90% 高度即触发
+                const startPct = threshold // 0~1，threshold=0.1 → 触发线在视口 90% 处
+                const triggerLine = vh * (1 - startPct)
+                return rect.top <= triggerLine
+              }
+
+              if (isAlreadyActive()) {
+                playAndMark()
+              } else {
+                const st = ScrollTrigger.create({
+                  trigger: el,
+                  start,
+                  once: true,
+                  invalidateOnRefresh: true,
+                  onEnter: () => {
+                    playAndMark()
+                  },
+                  // 兜底：refresh 时若元素已越过触发点（跳滚场景），立即播放
+                  onRefresh: (self) => {
+                    if (!animationCompletedRef.current && self.progress > 0) {
+                      playAndMark()
+                      self.kill()
+                    }
+                  },
+                })
+                return st
+              }
+            },
+          )
+        }
+      })
+      el._rbsplitInstance = splitInstance;
+      return () => {
+        ScrollTrigger.getAll().forEach(st => {
+          if (st.trigger === el) st.kill();
+        });
+        try {
+          splitInstance.revert();
+        } catch (_) {}
+        el._rbsplitInstance = undefined;
+      };
+    },
+    {
+      dependencies: [
+        text,
+        delay,
+        duration,
+        ease,
+        splitType,
+        mask,
+        JSON.stringify(from),
+        JSON.stringify(to),
+        threshold,
+        rootMargin,
+        fontsLoaded
+      ],
+      scope: ref
+    }
+  );
+
+  const renderTag = () => {
+    const style: React.CSSProperties = {
+      textAlign,
+      wordWrap: 'break-word',
+      willChange: 'transform, opacity'
+    };
+    const classes = `split-parent overflow-hidden inline-block whitespace-normal ${className}`;
+    const Tag = (tag || 'p') as React.ElementType;
+
+    return (
+      <Tag ref={ref} style={style} className={classes}>
+        {text}
+      </Tag>
+    );
+  };
+
+  return renderTag();
+};
+
+export default SplitText;
