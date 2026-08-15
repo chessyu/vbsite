@@ -130,9 +130,13 @@ export function VideoHeroBlockComponent({ data }: BlockProps<VideoHeroBlockData>
 
   if (!isCinematic || videoStatus.state === 'error') {
     return (
-      <section className="relative min-h-screen overflow-hidden">
-        {/* 海报底图 */}
-        <img src={d.poster} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover" />
+      <section className="relative min-h-screen overflow-hidden bg-stone-900">
+        {/* 海报底图（为空时纯深色底，避免 img src="" 警告） */}
+        {d.poster ? (
+          <img src={d.poster} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover" />
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-br from-stone-900 via-stone-800 to-warm-900/40" />
+        )}
         <div className="vh-global-scrim absolute inset-0" />
         {d.overlayTint && <div className="absolute inset-0" style={{ background: d.overlayTint }} />}
 
@@ -156,14 +160,18 @@ export function VideoHeroBlockComponent({ data }: BlockProps<VideoHeroBlockData>
   return (
     <div ref={trackRef} style={{ height: `${d.heightVh}vh` }} className="relative">
       <div ref={stageRef} className="sticky top-0 h-[100svh] overflow-hidden">
-        {/* 层1：海报（视频未就绪/加载中的底） */}
-        <img
-          ref={posterRef}
-          src={d.poster}
-          alt=""
-          aria-hidden
-          className="absolute inset-0 h-full w-full object-cover transition-opacity duration-700"
-        />
+        {/* 层1：海报（视频未就绪/加载中的底；为空时深色渐变底） */}
+        {d.poster ? (
+          <img
+            ref={posterRef}
+            src={d.poster}
+            alt=""
+            aria-hidden
+            className="absolute inset-0 h-full w-full object-cover transition-opacity duration-700"
+          />
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-br from-stone-900 via-stone-800 to-warm-900/40" />
+        )}
 
         {/* 层2：视频（合成层提升，仅 transform/opacity 动画） */}
         <video

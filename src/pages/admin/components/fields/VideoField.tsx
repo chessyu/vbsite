@@ -106,7 +106,7 @@ export function VideoField({ label, hint, userId, token, value, onChange, poster
           role="button"
           aria-label="上传视频"
         >
-          {effectivePreview || value ? (
+          {(effectivePreview || value) ? (
             <video src={effectivePreview ?? value} muted className="h-full w-full object-cover" />
           ) : busy ? (
             <span className="text-[10px] text-stone-400">处理中…</span>
