@@ -2,9 +2,13 @@ node_modules/
 dist/
 clients/*
 !clients/.gitkeep
+users/*
 .DS_Store
 *.log
 .env
 .env.local
 .playwright-mcp/
 package-lock.json
+
+# AI agent skills (本地工具产物，勿提交)
+.agents/

@@ -112,32 +112,51 @@ https://xxxxx.com/demi        → 客户 demi 的定制页面
 
 ## 📂 项目结构
 
+> 注：项目已从「HTML 单文件」架构迁移到 **React + Vite + GSAP + React Bits**。每个客户页面由 `users/<客户名>/space.json` 配置驱动，通过 `src/blocks/` 下的 block 组件动态渲染。
+
 ```
 vbsite/
 ├── CLAUDE.md                  # 本文件 — AI 项目上下文
-├── README.md                  # 项目说明文档
-├── package.json               # devDependencies: serve, html-minifier-terser
-├── .gitignore
-├── index.html                 # VBSite 官方落地页（根路径）
-├── resume/
-│   ├── index.html             # 个人简历 Demo 模板（暖色浅底）
-│   └── schema.json            # 简历数据字段定义
-├── portfolio/
-│   ├── index.html             # 作品集 Demo 模板（深色沉浸）
-│   └── schema.json            # 作品集数据字段定义
-├── clients/                   # 构建后的客户页面（gitignore）
-│   └── .gitkeep
-└── scripts/
-    └── build.js               # 模板 + JSON → 压缩 HTML 构建脚本
+├── src/
+│   ├── CLAUDE.md              # src 模块总览
+│   ├── main.tsx               # 入口（顶部 import '@/lib/gsap' 注册插件）
+│   ├── App.tsx                # 路由（单用户/多用户双模式）
+│   ├── lib/                   # 基础设施（GSAP 统一注册）
+│   ├── hooks/                 # 可复用 hook（GSAP 动效、配置加载）
+│   ├── types/                 # 全局 TS 类型
+│   ├── data/                  # 【预留】静态数据资源
+│   ├── pages/                 # 路由页面组件
+│   ├── components/            # 通用组件
+│   │   ├── ui/                # 动效/视觉原子组件（GSAP、WebGL）
+│   │   ├── shared/            # 跨页面共享业务组件
+│   │   ├── landing/           # 【预留】落地页专用组件
+│   │   ├── portfolio/         # 【预留】作品集专用组件
+│   │   └── resume/            # 【预留】简历专用组件
+│   └── blocks/                # 配置驱动的页面区块（hero/gallery/...）
+└── users/<客户名>/space.json   # 客户配置（pages + theme + blocks）
 ```
 
-**访问路径：**
+**路由：**
 ```
-/                    → index.html（官网落地页）
-/resume/             → 简历 Demo
-/portfolio/          → 作品集 Demo
-/clients/<客户名>/    → 客户定制页面
+/                       → LandingPage（官网落地页，多用户模式）
+/:username              → 用户空间首页（如 /cheesyu）
+/:username/:pageId      → 用户空间子页面（如 /cheesyu/products）
+单用户构建（VITE_BUILD_USER）→ 该用户页面，根路径渲染
 ```
+
+> **每个目录都有独立的 `CLAUDE.md`** 说明其职责、文件清单与约定。详见各目录下的 CLAUDE.md。
+
+---
+
+## 📁 目录约定（重要）
+
+1. **每创建一个新目录，必须同时创建该目录的 `CLAUDE.md`**，说明：
+   - 该目录的职责与边界（放什么、不放什么）
+   - 关键文件清单及各自用途
+   - 该目录的编码约定（命名、导入、与其它模块的关系）
+2. **预留目录**（暂无文件但已规划用途）也要写 CLAUDE.md，标注「预留」并说明未来规划。
+3. 目录职责发生变化时，同步更新对应的 CLAUDE.md，保持文档与代码一致。
+4. 根 CLAUDE.md 维护顶层目录索引，子目录 CLAUDE.md 不重复抄写全局内容。
 
 ---
 

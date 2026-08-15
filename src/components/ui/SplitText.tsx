@@ -102,29 +102,59 @@ const SplitText: React.FC<SplitTextProps> = ({
         reduceWhiteSpace: false,
         onSplit: (self: GSAPSplitText) => {
           assignTargets(self);
-          return gsap.fromTo(
-            targets,
-            { ...from },
-            {
-              ...to,
-              duration,
-              ease,
-              stagger: delay / 1000,
-              scrollTrigger: {
-                trigger: el,
-                start,
-                once: true,
-                fastScrollEnd: true,
-                anticipatePin: 0.4
+
+          const playAndMark = () => {
+            gsap.fromTo(
+              targets,
+              { ...from },
+              {
+                ...to,
+                duration,
+                ease,
+                stagger: delay / 1000,
+                onComplete: () => {
+                  animationCompletedRef.current = true;
+                  onCompleteRef.current?.();
+                },
+                willChange: 'transform, opacity',
+                force3D: true,
               },
-              onComplete: () => {
-                animationCompletedRef.current = true;
-                onCompleteRef.current?.();
+            );
+          };
+
+          // 元素当前是否已进入「应播放」的位置（含跳滚/刷新后已在视口的场景）。
+          // 用此判断替代纯 once scrollTrigger，避免瞬间跳滚错过 scroll 事件导致
+          // 文字永久卡在 from 初始态（opacity:0）。
+          const isAlreadyActive = () => {
+            const rect = el.getBoundingClientRect();
+            const vh = window.innerHeight;
+            // start 默认 'top 90%'：元素顶部到达视口 90% 高度即触发
+            const startPct = threshold; // 0~1，threshold=0.1 → 触发线在视口 90% 处
+            const triggerLine = vh * (1 - startPct);
+            return rect.top <= triggerLine;
+          };
+
+          if (isAlreadyActive()) {
+            playAndMark();
+          } else {
+            const st = ScrollTrigger.create({
+              trigger: el,
+              start,
+              once: true,
+              invalidateOnRefresh: true,
+              onEnter: () => {
+                playAndMark();
               },
-              willChange: 'transform, opacity',
-              force3D: true
-            }
-          );
+              // 兜底：refresh 时若元素已越过触发点（跳滚场景），立即播放
+              onRefresh: (self) => {
+                if (!animationCompletedRef.current && self.progress > 0) {
+                  playAndMark();
+                  self.kill();
+                }
+              },
+            });
+            return st;
+          }
         }
       });
       el._rbsplitInstance = splitInstance;
