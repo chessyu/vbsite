@@ -13,6 +13,22 @@ function storageKey(userId: string) {
   return `vbsite:admin:draft:${userId}`
 }
 
+/**
+ * 检测 UTF-8 被 Latin-1 二次编码的污染特征（mojibake）。
+ * 真实中文文案几乎不会高频出现这些字符序列；出现即说明草稿在某个坏缓存时期
+ * 被错误解码后存了下来（如 "用 ❤️ 打造" 变成 "ç¨ â¤ï¸ æå»"）。
+ */
+function looksMojibake(raw: string): boolean {
+  const patterns = [/[ÂÃ¢][\x80-\xBF]/g, /æ[\x80-\xBF]/g, /ç[\x80-\x9F]/g]
+  let hits = 0
+  for (const re of patterns) {
+    hits += (raw.match(re) ?? []).length
+  }
+  // 草稿里含中文时才判断（纯英文配置误检率极高，跳过）
+  const hasCJK = /[一-鿿]/.test(raw)
+  return hasCJK ? hits >= 3 : hits >= 8
+}
+
 export function EditorProvider({ userId, initialConfig, children }: {
   userId: string
   initialConfig: SpaceConfig
@@ -23,10 +39,16 @@ export function EditorProvider({ userId, initialConfig, children }: {
     try {
       const raw = localStorage.getItem(storageKey(userId))
       if (raw) {
-        const draft = JSON.parse(raw) as SpaceConfig
-        if (draft?.pages?.length && draft.space) {
-          const base = editorReducer(null, { type: 'INIT', userId, config: initialConfig })!
-          return { ...base, draft }
+        // 编码污染防护：坏缓存时期存下的 mojibake 草稿自动丢弃，回到线上干净版本
+        if (looksMojibake(raw)) {
+          console.warn('[vbsite:admin] 检测到草稿编码异常，已丢弃并恢复为线上版本')
+          localStorage.removeItem(storageKey(userId))
+        } else {
+          const draft = JSON.parse(raw) as SpaceConfig
+          if (draft?.pages?.length && draft.space) {
+            const base = editorReducer(null, { type: 'INIT', userId, config: initialConfig })!
+            return { ...base, draft }
+          }
         }
       }
     } catch {
