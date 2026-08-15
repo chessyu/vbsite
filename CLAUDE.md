@@ -117,15 +117,16 @@ https://xxxxx.com/demi        → 客户 demi 的定制页面
 ```
 vbsite/
 ├── CLAUDE.md                  # 本文件 — AI 项目上下文
+├── functions/                 # Cloudflare Pages Functions（/api/* 服务端：鉴权/GitHub 提交/资源上传）
 ├── src/
 │   ├── CLAUDE.md              # src 模块总览
 │   ├── main.tsx               # 入口（顶部 import '@/lib/gsap' 注册插件）
 │   ├── App.tsx                # 路由（单用户/多用户双模式）
-│   ├── lib/                   # 基础设施（GSAP 统一注册）
+│   ├── lib/                   # 基础设施（GSAP 统一注册、spaceSchema、admin API）
 │   ├── hooks/                 # 可复用 hook（GSAP 动效、配置加载）
 │   ├── types/                 # 全局 TS 类型
 │   ├── data/                  # 【预留】静态数据资源
-│   ├── pages/                 # 路由页面组件
+│   ├── pages/                 # 路由页面组件（含 admin/ 管理后台）
 │   ├── components/            # 通用组件
 │   │   ├── ui/                # 动效/视觉原子组件（GSAP、WebGL）
 │   │   ├── shared/            # 跨页面共享业务组件
@@ -141,7 +142,10 @@ vbsite/
 /                       → LandingPage（官网落地页，多用户模式）
 /:username              → 用户空间首页（如 /cheesyu）
 /:username/:pageId      → 用户空间子页面（如 /cheesyu/products）
-单用户构建（VITE_BUILD_USER）→ 该用户页面，根路径渲染
+/admin                  → 管理后台（登录/客户列表/新建用户）
+/admin/:userId/edit     → 可视化编辑器（?token= 临时凭证，无效/过期渲染 404）
+/api/*                  → Pages Functions（服务端，密钥不出环境变量）
+单用户构建（VITE_BUILD_USER）→ 该用户页面，根路径渲染（不含 /admin）
 ```
 
 **客户图片资产约定：**

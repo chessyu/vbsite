@@ -6,12 +6,10 @@ clients/*
 *.log
 .env
 .env.local
+.dev.vars
 .playwright-mcp/
 package-lock.json
 
 # AI agent skills (本地工具产物，勿提交)
 .agents/
 
-# 用户空间：space.json 配置随仓库（demo/模板用途），真实客户数据不入库
-users/*
-!users/cheesyu

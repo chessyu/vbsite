@@ -1,3 +1,4 @@
+import { lazy } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import LandingPage from './pages/LandingPage'
 import StarPage from './pages/StarPage'
@@ -5,6 +6,15 @@ import UserSpacePage from './pages/UserSpacePage'
 import SingleUserSpacePage from './pages/SingleUserSpacePage'
 import { useSpaceConfig } from './hooks/useSpaceConfig'
 import { getLastVisitedUser } from './components/RootRedirect'
+
+// admin 后台整体懒加载（不进首屏 bundle）
+const AdminApp = lazy(() => import('./pages/admin/AdminApp'))
+const AdminLoginPage = lazy(() => import('./pages/admin/AdminLoginPage'))
+const AdminDashboardPage = lazy(() => import('./pages/admin/AdminDashboardPage'))
+const AdminNewUserPage = lazy(() => import('./pages/admin/AdminNewUserPage'))
+const AdminEditPage = lazy(() => import('./pages/admin/AdminEditPage'))
+const PreviewPage = lazy(() => import('./pages/admin/PreviewPage'))
+const NotFound = lazy(() => import('./components/shared/NotFound'))
 
 /** 根路由：重定向到最近访问的用户空间 */
 function RootRedirect() {
@@ -71,6 +81,16 @@ function MultiUserApp() {
       {/* 用户空间（含子页面，未知用户/页面由 UserSpacePage 内部处理重定向） */}
       <Route path="/:username" element={<UserSpacePage />} />
       <Route path="/:username/:pageId" element={<UserSpacePage />} />
+
+      {/* 管理后台（静态段 "admin" 按 specificity 恒优先于 :username） */}
+      <Route path="/admin" element={<AdminApp />}>
+        <Route index element={<AdminDashboardPage />} />
+        <Route path="login" element={<AdminLoginPage />} />
+        <Route path="newUser" element={<AdminNewUserPage />} />
+        <Route path=":userId/edit" element={<AdminEditPage />} />
+        <Route path="preview" element={<PreviewPage />} />
+        <Route path="*" element={<NotFound />} />
+      </Route>
 
       {/* 兜底：所有未匹配路由重定向到根路径 */}
       <Route path="*" element={<Navigate to="/" replace />} />

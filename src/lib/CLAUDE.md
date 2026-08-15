@@ -1,15 +1,16 @@
 # src/lib/ — 基础设施
 
-跨模块共享的底层基础设施（无 React 依赖）。GSAP 注册入口 + space.json 校验 schema。
+跨模块共享的底层基础设施（无 React 依赖）。GSAP 注册入口 + space.json 校验 schema + admin 浏览器侧 API。
 
 ## 文件
 
 - `gsap.ts` — **全站唯一 GSAP 插件注册入口**。集中 `registerPlugin(ScrollTrigger, SplitText, Observer, useGSAP)`，导出 `gsap` 及各插件。利用 registerPlugin 幂等性，重复 import 无副作用。
 - `spaceSchema.ts` — **space.json 的 zod schema 单一来源**。聚合各 block 的 data schema，提供两级校验：
   - `parseSpaceConfig`（运行时宽松）：未知 block type 警告 + 跳过，不阻断渲染
-  - `parseSpaceConfigStrict`（构建期严格）：未知 type 也报错，供 `scripts/validate-config.mts` 使用
+  - `parseSpaceConfigStrict`（构建期严格）：未知 type 也报错，供 `scripts/validate-config.mts` 与 functions 发布端点使用
   - `SpaceConfig` 等类型由 schema `z.infer` 推导，`@/types/space` 只是 re-export 层
-  - 注意：本模块需同时被 Vite 与 tsx（node）加载，**用相对路径 import**，不用 `@/` 别名
+  - 注意：本模块需同时被 Vite、tsx（node）与 Pages Functions（esbuild）加载，**用相对路径 import**，不用 `@/` 别名
+- `admin/` — admin 前端基础设施（fetch 封装 + token UX 解析）。详见 [admin/CLAUDE.md](admin/CLAUDE.md)。
 
 ## 用法
 

@@ -7,6 +7,7 @@
 - `GlassCard.tsx` — 毛玻璃卡片容器。支持明/暗主题（`dark` prop）。
 - `GradientHeading.tsx` — 渐变色标题（warm→accent-pink）。
 - `Footer.tsx` — 页脚。`dark` prop 切换主题，`text` prop 自定义文案。
+- `NotFound.tsx` — 通用 404 页面（大字 404 + 返回首页）。admin 编辑链接无效/过期时也用它（不区分原因，防探测）。
 
 ## 约定
 

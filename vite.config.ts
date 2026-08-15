@@ -39,6 +39,13 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  server: {
+    proxy: {
+      // 本地调试 Pages Functions（wrangler pages dev --proxy 5173 --port 8788）时，
+      // 让只开 5173 的场景也能访问 /api/*
+      '/api': 'http://localhost:8788',
+    },
+  },
   // 单用户构建使用相对路径，客户可能放在任何域名下
   base: isGenerate ? './' : '/',
   build: {
