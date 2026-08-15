@@ -11,6 +11,7 @@ import { z } from 'zod'
 // 注意：本模块需同时被 Vite（支持 @ 别名）和 scripts/validate-config.mts（tsx，不支持别名）加载，
 // 因此这里统一用相对路径导入。
 import { heroBlockDataSchema } from '../blocks/hero/types'
+import { videoHeroBlockDataSchema } from '../blocks/video-hero/types'
 import { aboutBlockDataSchema } from '../blocks/about/types'
 import { experienceBlockDataSchema } from '../blocks/experience/types'
 import { skillsBlockDataSchema } from '../blocks/skills/types'
@@ -43,6 +44,7 @@ export const themeConfigSchema = z.object({
 /** 已注册 block 的 data schema 聚合表 */
 export const blockDataSchemas = {
   hero: heroBlockDataSchema,
+  'video-hero': videoHeroBlockDataSchema,
   about: aboutBlockDataSchema,
   experience: experienceBlockDataSchema,
   skills: skillsBlockDataSchema,
