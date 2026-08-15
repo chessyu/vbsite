@@ -4,7 +4,7 @@
 
 ## 文件
 
-`HeroForm / AboutForm / ExperienceForm / SkillsForm / GalleryForm / FeaturedProjectForm / ServicesForm / ContactForm` + `index.ts`（注册表 + `blockTypeLabels` 中文标签）。
+`HeroForm / VideoHeroForm / AboutForm / ExperienceForm / SkillsForm / GalleryForm / FeaturedProjectForm / ServicesForm / ContactForm` + `index.ts`（注册表 + `blockTypeLabels` 中文标签）。
 
 ## 约定
 
