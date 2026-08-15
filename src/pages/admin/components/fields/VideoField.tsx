@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Field } from './TextField'
 import { transcodeForScrub } from '@/lib/admin/videoTranscode'
+import { registerSessionAsset } from '../../state/sessionAssets'
 
 export interface VideoFieldResult {
   /** 上传后的绝对路径（写入 space.json） */
@@ -81,6 +82,8 @@ export function VideoField({ label, hint, userId, token, value, onChange, poster
       // 3. 回填（会话内用本地 blob 预览，远端文件刚 commit 还未部署）
       const localPreview = URL.createObjectURL(video)
       const localPosterPreview = URL.createObjectURL(poster)
+      // poster 远端路径也登记会话映射（供 avatar/gallery 等通用图片渲染路径替换）
+      if (posterUploaded) registerSessionAsset(posterUploaded.path, localPosterPreview)
       onChange({
         url: videoUploaded?.path ?? '',
         bytes: videoUploaded?.bytes ?? video.size,

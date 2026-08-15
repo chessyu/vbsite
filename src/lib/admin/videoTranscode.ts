@@ -18,6 +18,8 @@ import type { FFmpeg } from '@ffmpeg/ffmpeg'
 const TARGET_BYTES = 8 * 1024 * 1024
 
 const CDN = 'https://unpkg.com/@ffmpeg/core@0.12.10/dist/umd'
+/** @ffmpeg/ffmpeg 本体的 worker chunk（umd 经典脚本；Vite 下默认 new URL worker 打包会失败，必须显式给） */
+const FFMPEG_CDN = 'https://unpkg.com/@ffmpeg/ffmpeg@0.12.15/dist/umd'
 
 let ffmpegInstance: FFmpeg | null = null
 let loadingPromise: Promise<FFmpeg> | null = null
@@ -32,6 +34,9 @@ async function getFFmpeg(onProgress?: (ratio: number) => void): Promise<FFmpeg> 
       await ffmpeg.load({
         coreURL: await toBlobURL(`${CDN}/ffmpeg-core.js`, 'text/javascript'),
         wasmURL: await toBlobURL(`${CDN}/ffmpeg-core.wasm`, 'application/wasm'),
+        // 关键：Vite dev/build 下默认的 new Worker(new URL('./worker.js', import.meta.url))
+        // 解析失败导致 Worker 构造抛错。显式指定 umd worker chunk 的 blob URL 绕开。
+        classWorkerURL: await toBlobURL(`${FFMPEG_CDN}/814.ffmpeg.js`, 'text/javascript'),
       })
       ffmpegInstance = ffmpeg
       return ffmpeg

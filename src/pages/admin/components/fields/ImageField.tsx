@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import { Field } from './TextField'
+import { registerSessionAsset } from '../../state/sessionAssets'
 
 /**
  * 图片上传控件 — 上传到 /api/space/:userId/assets 后回填绝对路径。
@@ -26,6 +27,8 @@ export function ImageField({ label, hint, userId, token, value, onChange }: {
     try {
       const { spaceApi } = await import('@/lib/admin/api')
       const { files } = await spaceApi.uploadAssets(userId, [file], token)
+      // 登记会话预览映射：预览 iframe 渲染前会把该远端路径替换为 dataUrl
+      if (files[0].dataUrl) registerSessionAsset(files[0].path, files[0].dataUrl)
       onChange(files[0].path)
       setSessionPreview(files[0].dataUrl ?? null)
     } catch (err) {

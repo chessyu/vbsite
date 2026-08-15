@@ -243,19 +243,10 @@ export function VideoHeroBlockComponent({ data }: BlockProps<VideoHeroBlockData>
         )}
       </div>
 
-      {/* 四层可读性系统的 CSS（scoped，常量同源见 staticFallback.ts 注释） */}
+      {/* 可读性系统 CSS（全局 scrim + 三层 text-shadow；用户要求字幕无局部背景） */}
       <style>{`
         .vh-global-scrim {
           background: radial-gradient(ellipse 120% 90% at 50% 45%, rgba(10,10,18,0) 35%, rgba(10,10,18,0.62) 100%);
-        }
-        .vh-caption::before {
-          content: "";
-          position: absolute;
-          inset: -6% -4%;
-          pointer-events: none;
-          background: radial-gradient(ellipse 74% 62% at 50% 50%, rgba(5,5,10,0.66) 0%, rgba(5,5,10,0.44) 46%, rgba(5,5,10,0) 76%);
-          opacity: calc(0.25 + 0.75 * var(--k, 0));
-          z-index: -1;
         }
         .vh-text-shadow {
           text-shadow: 0 1px 2px rgba(5,5,10,0.95), 0 3px 12px rgba(5,5,10,0.78), 0 10px 44px rgba(5,5,10,0.8);
