@@ -13,6 +13,8 @@ export interface SplitTextProps {
   duration?: number;
   ease?: string | ((t: number) => number);
   splitType?: 'chars' | 'words' | 'lines' | 'words, chars';
+  /** GSAP SplitText 原生遮罩：每个分割单元包一层 overflow-hidden 容器（用于 yPercent 遮罩揭示） */
+  mask?: 'chars' | 'words' | 'lines';
   from?: gsap.TweenVars;
   to?: gsap.TweenVars;
   threshold?: number;
@@ -29,6 +31,7 @@ const SplitText: React.FC<SplitTextProps> = ({
   duration = 1.25,
   ease = 'power3.out',
   splitType = 'chars',
+  mask,
   from = { opacity: 0, y: 40 },
   to = { opacity: 1, y: 0 },
   threshold = 0.1,
@@ -94,6 +97,7 @@ const SplitText: React.FC<SplitTextProps> = ({
       };
       const splitInstance = new GSAPSplitText(el, {
         type: splitType,
+        mask,
         smartWrap: true,
         autoSplit: splitType === 'lines',
         linesClass: 'split-line',
@@ -103,60 +107,78 @@ const SplitText: React.FC<SplitTextProps> = ({
         onSplit: (self: GSAPSplitText) => {
           assignTargets(self);
 
-          const playAndMark = () => {
-            gsap.fromTo(
-              targets,
-              { ...from },
-              {
-                ...to,
-                duration,
-                ease,
-                stagger: delay / 1000,
-                onComplete: () => {
-                  animationCompletedRef.current = true;
-                  onCompleteRef.current?.();
-                },
-                willChange: 'transform, opacity',
-                force3D: true,
-              },
-            );
-          };
+          // 三档 matchMedia 降级（与 AnimatedContent 策略对齐）：
+          // isDesktop 全特效；isMobile 时长/延迟减半；reduce 直接终态直出。
+          const mm = gsap.matchMedia()
+          mm.add(
+            {
+              isDesktop: '(min-width: 768px) and (prefers-reduced-motion: no-preference)',
+              isMobile: '(min-width: 0px) and (prefers-reduced-motion: no-preference)',
+              reduce: '(prefers-reduced-motion: reduce)',
+            },
+            (ctx) => {
+              if (ctx.conditions?.reduce) {
+                gsap.set(targets, { ...to })
+                animationCompletedRef.current = true
+                return
+              }
+              const isMobile = !!ctx.conditions?.isMobile
+              const playAndMark = () => {
+                gsap.fromTo(
+                  targets,
+                  { ...from },
+                  {
+                    ...to,
+                    duration: isMobile ? duration / 2 : duration,
+                    ease,
+                    stagger: (isMobile ? delay / 2000 : delay / 1000),
+                    onComplete: () => {
+                      animationCompletedRef.current = true
+                      onCompleteRef.current?.()
+                    },
+                    willChange: 'transform, opacity',
+                    force3D: true,
+                  },
+                )
+              }
 
-          // 元素当前是否已进入「应播放」的位置（含跳滚/刷新后已在视口的场景）。
-          // 用此判断替代纯 once scrollTrigger，避免瞬间跳滚错过 scroll 事件导致
-          // 文字永久卡在 from 初始态（opacity:0）。
-          const isAlreadyActive = () => {
-            const rect = el.getBoundingClientRect();
-            const vh = window.innerHeight;
-            // start 默认 'top 90%'：元素顶部到达视口 90% 高度即触发
-            const startPct = threshold; // 0~1，threshold=0.1 → 触发线在视口 90% 处
-            const triggerLine = vh * (1 - startPct);
-            return rect.top <= triggerLine;
-          };
+              // 元素当前是否已进入「应播放」的位置（含跳滚/刷新后已在视口的场景）。
+              // 用此判断替代纯 once scrollTrigger，避免瞬间跳滚错过 scroll 事件导致
+              // 文字永久卡在 from 初始态（opacity:0）。
+              const isAlreadyActive = () => {
+                const rect = el.getBoundingClientRect()
+                const vh = window.innerHeight
+                // start 默认 'top 90%'：元素顶部到达视口 90% 高度即触发
+                const startPct = threshold // 0~1，threshold=0.1 → 触发线在视口 90% 处
+                const triggerLine = vh * (1 - startPct)
+                return rect.top <= triggerLine
+              }
 
-          if (isAlreadyActive()) {
-            playAndMark();
-          } else {
-            const st = ScrollTrigger.create({
-              trigger: el,
-              start,
-              once: true,
-              invalidateOnRefresh: true,
-              onEnter: () => {
-                playAndMark();
-              },
-              // 兜底：refresh 时若元素已越过触发点（跳滚场景），立即播放
-              onRefresh: (self) => {
-                if (!animationCompletedRef.current && self.progress > 0) {
-                  playAndMark();
-                  self.kill();
-                }
-              },
-            });
-            return st;
-          }
+              if (isAlreadyActive()) {
+                playAndMark()
+              } else {
+                const st = ScrollTrigger.create({
+                  trigger: el,
+                  start,
+                  once: true,
+                  invalidateOnRefresh: true,
+                  onEnter: () => {
+                    playAndMark()
+                  },
+                  // 兜底：refresh 时若元素已越过触发点（跳滚场景），立即播放
+                  onRefresh: (self) => {
+                    if (!animationCompletedRef.current && self.progress > 0) {
+                      playAndMark()
+                      self.kill()
+                    }
+                  },
+                })
+                return st
+              }
+            },
+          )
         }
-      });
+      })
       el._rbsplitInstance = splitInstance;
       return () => {
         ScrollTrigger.getAll().forEach(st => {
@@ -175,6 +197,7 @@ const SplitText: React.FC<SplitTextProps> = ({
         duration,
         ease,
         splitType,
+        mask,
         JSON.stringify(from),
         JSON.stringify(to),
         threshold,

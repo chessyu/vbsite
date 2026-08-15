@@ -144,6 +144,11 @@ vbsite/
 单用户构建（VITE_BUILD_USER）→ 该用户页面，根路径渲染
 ```
 
+**客户图片资产约定：**
+- 图片文件放 `public/users/<客户名>/images/`（不放 `users/`——dev 中间件把 `/users/*` 响应固定为 JSON）
+- space.json 中引用写**绝对路径** `/users/<客户名>/images/xxx.jpg`（相对路径在子路径页面会解析错）
+- `public/` 在 dev 与 generate 两种模式下行为一致，无需额外拷贝逻辑
+
 > **每个目录都有独立的 `CLAUDE.md`** 说明其职责、文件清单与约定。详见各目录下的 CLAUDE.md。
 
 ---

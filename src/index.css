@@ -31,6 +31,18 @@
   --font-body: 'Noto Sans SC', sans-serif;
 }
 
+/* ========== 项目自定义动画 ========== */
+@keyframes scroll-hint {
+  0% { transform: translateY(-100%); }
+  60%, 100% { transform: translateY(200%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-\[scroll-hint_2s_ease-in-out_infinite\] {
+    animation: none;
+  }
+}
+
 /* ========== shadcn 主题变量 ========== */
 @theme inline {
   --font-heading: var(--font-sans);

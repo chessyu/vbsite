@@ -93,7 +93,8 @@ function buildUser(username, outputDir) {
         if (fs.existsSync(dst)) fs.rmSync(dst, { recursive: true, force: true })
         fs.renameSync(src, dst)
       }
-      try { fs.rmdirSync(distDir) } catch {}
+      // dist 下可能有嵌套目录（如 public/users/...），必须递归删除
+      try { fs.rmSync(distDir, { recursive: true, force: true }) } catch {}
     }
 
     // 报告结果
