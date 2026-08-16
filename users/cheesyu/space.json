@@ -22,10 +22,10 @@
           "type": "video-hero",
           "data": {
             "video": {
-              "url": "/users/cheesyu/videos/2026-08-15-21-17-28-scrub-vdy1nw.mp4",
+              "url": "/users/cheesyu/assets/2026-08-15-21-17-28-scrub-vdy1nw.mp4",
               "bytes": 5290484
             },
-            "poster": "/users/cheesyu/images/2026-08-15-21-17-28-poster-cus5dq.png",
+            "poster": "/users/cheesyu/assets/2026-08-15-21-17-28-poster-cus5dq.png",
             "heightVh": 800,
             "captions": [
               {
@@ -283,7 +283,7 @@
               {
                 "title": "科技公司全案设计",
                 "category": "品牌设计",
-                "image": "/users/cheesyu/images/project-branding.jpg",
+                "image": "/users/cheesyu/assets/project-branding.jpg",
                 "desc": "从 Logo 到完整的品牌视觉体系，包含色彩、字体、图标与应用规范。",
                 "tags": [
                   "品牌全案",
@@ -295,7 +295,7 @@
               {
                 "title": "健康追踪 App",
                 "category": "APP 设计",
-                "image": "/users/cheesyu/images/project-healthapp.jpg",
+                "image": "/users/cheesyu/assets/project-healthapp.jpg",
                 "desc": "清新简洁的健康数据可视化界面设计。",
                 "tags": [
                   "UI 设计",
@@ -305,7 +305,7 @@
               {
                 "title": "电商平台重构",
                 "category": "网页设计",
-                "image": "/users/cheesyu/images/project-ecommerce.jpg",
+                "image": "/users/cheesyu/assets/project-ecommerce.jpg",
                 "desc": "现代化电商体验设计，提升转化率 35%。",
                 "tags": [
                   "电商",
@@ -321,7 +321,7 @@
               {
                 "title": "企业级组件库",
                 "category": "系统设计",
-                "image": "/users/cheesyu/images/project-designsystem.jpg",
+                "image": "/users/cheesyu/assets/project-designsystem.jpg",
                 "desc": "包含 200+ 组件的完整设计系统。",
                 "tags": [
                   "设计系统",
@@ -452,7 +452,7 @@
               {
                 "title": "科技公司全案设计",
                 "category": "品牌设计",
-                "image": "/users/cheesyu/images/project-branding.jpg",
+                "image": "/users/cheesyu/assets/project-branding.jpg",
                 "desc": "从 Logo 到完整的品牌视觉体系，包含色彩、字体、图标与应用规范。",
                 "tags": [
                   "品牌全案",
@@ -464,7 +464,7 @@
               {
                 "title": "健康追踪 App",
                 "category": "APP 设计",
-                "image": "/users/cheesyu/images/project-healthapp.jpg",
+                "image": "/users/cheesyu/assets/project-healthapp.jpg",
                 "desc": "清新简洁的健康数据可视化界面设计。",
                 "tags": [
                   "UI 设计",
@@ -474,7 +474,7 @@
               {
                 "title": "电商平台重构",
                 "category": "网页设计",
-                "image": "/users/cheesyu/images/project-ecommerce.jpg",
+                "image": "/users/cheesyu/assets/project-ecommerce.jpg",
                 "desc": "现代化电商体验设计，提升转化率 35%。",
                 "tags": [
                   "电商",
@@ -490,7 +490,7 @@
               {
                 "title": "企业级组件库",
                 "category": "系统设计",
-                "image": "/users/cheesyu/images/project-designsystem.jpg",
+                "image": "/users/cheesyu/assets/project-designsystem.jpg",
                 "desc": "包含 200+ 组件的完整设计系统。",
                 "tags": [
                   "设计系统",
