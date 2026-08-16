@@ -1,5 +1,6 @@
 import type { BlockDefinition } from './types'
 import { HeroBlockComponent } from './hero/HeroBlock'
+import { VideoHeroBlockComponent } from './video-hero/VideoHeroBlock'
 import { AboutBlockComponent } from './about/AboutBlock'
 import { ExperienceBlockComponent } from './experience/ExperienceBlock'
 import { SkillsBlockComponent } from './skills/SkillsBlock'
@@ -8,6 +9,7 @@ import { FeaturedProjectBlockComponent } from './featured-project/FeaturedProjec
 import { ServicesBlockComponent } from './services/ServicesBlock'
 import { ContactBlockComponent } from './contact/ContactBlock'
 import { heroBlockDataSchema } from './hero/types'
+import { videoHeroBlockDataSchema } from './video-hero/types'
 import { aboutBlockDataSchema } from './about/types'
 import { experienceBlockDataSchema } from './experience/types'
 import { skillsBlockDataSchema } from './skills/types'
@@ -29,6 +31,7 @@ function defineBlock<TData>(def: BlockDefinition<TData>): BlockDefinition<unknow
 
 const allBlocks: BlockDefinition<unknown>[] = [
   defineBlock({ type: 'hero', component: HeroBlockComponent, schema: heroBlockDataSchema }),
+  defineBlock({ type: 'video-hero', component: VideoHeroBlockComponent, schema: videoHeroBlockDataSchema }),
   defineBlock({ type: 'about', component: AboutBlockComponent, schema: aboutBlockDataSchema }),
   defineBlock({ type: 'experience', component: ExperienceBlockComponent, schema: experienceBlockDataSchema }),
   defineBlock({ type: 'skills', component: SkillsBlockComponent, schema: skillsBlockDataSchema }),

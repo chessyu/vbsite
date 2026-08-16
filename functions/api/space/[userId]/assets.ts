@@ -19,6 +19,11 @@ const IMAGE_MIME: Record<string, string> = {
   'image/avif': 'avif',
 }
 
+const VIDEO_MIME: Record<string, string> = {
+  'video/mp4': 'mp4',
+  'video/webm': 'webm',
+}
+
 /** 文件名 slug 化 + 随机后缀，防覆盖冲突与非 ASCII 路径问题 */
 function assetName(original: string, ext: string): string {
   const base = original
@@ -53,6 +58,7 @@ export const onRequestPost = withEnv<PagesContext>(async ({ request, params }, e
   if (isResponse(auth)) return auth
 
   const maxBytes = env.MAX_ASSET_MB * 1024 * 1024
+  const videoMaxBytes = env.VIDEO_MAX_MB * 1024 * 1024
 
   let form: FormData
   try {
@@ -73,23 +79,33 @@ export const onRequestPost = withEnv<PagesContext>(async ({ request, params }, e
   const entries = []
 
   for (const file of files) {
-    const ext = IMAGE_MIME[file.type]
+    const isVideo = file.type in VIDEO_MIME
+    const ext = IMAGE_MIME[file.type] ?? VIDEO_MIME[file.type]
     if (!ext) {
-      return jsonError('INVALID_INPUT', `不支持的文件类型：${file.type || '未知'}（仅支持图片）`, 400)
+      return jsonError('INVALID_INPUT', `不支持的文件类型：${file.type || '未知'}（仅支持图片/视频）`, 400)
     }
-    if (file.size > maxBytes) {
-      return jsonError('INVALID_INPUT', `文件 ${file.name} 超过 ${env.MAX_ASSET_MB}MB 上限`, 400)
+    // 视频单独上限（较大），图片维持 MAX_ASSET_MB
+    const fileMaxBytes = isVideo ? videoMaxBytes : maxBytes
+    const fileMaxLabel = isVideo ? env.VIDEO_MAX_MB : env.MAX_ASSET_MB
+    if (file.size > fileMaxBytes) {
+      return jsonError('INVALID_INPUT', `文件 ${file.name} 超过 ${fileMaxLabel}MB 上限`, 400)
     }
 
     const buffer = await file.arrayBuffer()
     const base64 = arrayBufferToBase64(buffer)
-    const path = `public/users/${params.userId}/images/${assetName(file.name, ext)}`
+    const dir = isVideo ? 'videos' : 'images'
+    const path = `public/users/${params.userId}/${dir}/${assetName(file.name, ext)}`
 
     entries.push({ path, content: base64, encoding: 'base64' as const })
-    results.push({ path: `/${path.replace(/^public\//, '')}`, dataUrl: `data:${file.type};base64,${base64}`, bytes: file.size })
+    results.push({
+      path: `/${path.replace(/^public\//, '')}`,
+      // 视频不回 base64 dataUrl（大体积会撑爆编辑器内存与 postMessage），会话内预览用本地 blob
+      dataUrl: isVideo ? undefined : `data:${file.type};base64,${base64}`,
+      bytes: file.size,
+    })
   }
 
-  const commit = await commitFiles(env, entries, `chore(admin): 上传 ${params.userId} 的图片资源 ×${entries.length}`)
+  const commit = await commitFiles(env, entries, `chore(admin): 上传 ${params.userId} 的资源 ×${entries.length}`)
   if (isResponse(commit)) return commit
 
   return jsonOk({ files: results, commitSha: commit.commitSha })

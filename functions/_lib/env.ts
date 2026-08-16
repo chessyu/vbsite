@@ -9,6 +9,7 @@ export interface AdminEnv {
   GITHUB_REPO: string
   GITHUB_BRANCH: string
   MAX_ASSET_MB: number
+  VIDEO_MAX_MB: number
 }
 
 export function getEnv(context: { env: Record<string, unknown> }): AdminEnv {
@@ -35,6 +36,7 @@ export function getEnv(context: { env: Record<string, unknown> }): AdminEnv {
     GITHUB_REPO: require('GITHUB_REPO'),
     GITHUB_BRANCH: (env.GITHUB_BRANCH as string) || 'main',
     MAX_ASSET_MB: optional('MAX_ASSET_MB', 10),
+    VIDEO_MAX_MB: optional('VIDEO_MAX_MB', 50),
   }
 }
 

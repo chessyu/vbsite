@@ -62,8 +62,12 @@ export async function readSpace(
   if (typeof content !== 'string' || typeof sha !== 'string') {
     return githubError('解析 space.json', status, body)
   }
-  // GitHub contents API 返回 base64（按行换行的变体）
-  const text = atob(content.replace(/\n/g, ''))
+  // GitHub contents API 返回 base64（按行换行的变体）。
+  // atob 产出 Latin-1 字符串（每字符一字节），必须显式按 UTF-8 解码——
+  // 否则中文（多字节 UTF-8）会被拆成多个 Latin-1 字符（mojibake）。
+  const binary = atob(content.replace(/\n/g, ''))
+  const bytes = Uint8Array.from(binary, ch => ch.charCodeAt(0))
+  const text = new TextDecoder('utf-8').decode(bytes)
   return { content: text, sha }
 }
 

@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react'
 import type { BlockType } from '@/lib/spaceSchema'
 import { HeroForm } from './HeroForm'
+import { VideoHeroForm } from './VideoHeroForm'
 import { AboutForm } from './AboutForm'
 import { ExperienceForm } from './ExperienceForm'
 import { SkillsForm } from './SkillsForm'
@@ -29,6 +30,7 @@ function defineForm(component: unknown): ComponentType<BlockFormProps> {
 /** type → 表单组件注册表（仿 blocks/registry.ts 模式） */
 export const formRegistry: { [K in BlockType]: ComponentType<BlockFormProps> } = {
   hero: defineForm(HeroForm),
+  'video-hero': defineForm(VideoHeroForm),
   about: defineForm(AboutForm),
   experience: defineForm(ExperienceForm),
   skills: defineForm(SkillsForm),
@@ -40,6 +42,7 @@ export const formRegistry: { [K in BlockType]: ComponentType<BlockFormProps> } =
 
 export const blockTypeLabels: Record<BlockType, string> = {
   hero: '首屏 Hero',
+  'video-hero': '视频首屏（电影感滚动）',
   about: '关于我',
   experience: '工作经历',
   skills: '技能',
@@ -47,4 +50,17 @@ export const blockTypeLabels: Record<BlockType, string> = {
   'featured-project': '深度案例',
   services: '服务卡片',
   contact: '联系方式',
+}
+
+/** 区块类型图标（列表与下拉菜单共用） */
+export const blockTypeIcons: Record<BlockType, string> = {
+  hero: '🚀',
+  'video-hero': '🎬',
+  about: '👤',
+  experience: '💼',
+  skills: '⭐',
+  gallery: '🖼️',
+  'featured-project': '🏆',
+  services: '✨',
+  contact: '📮',
 }

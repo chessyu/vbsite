@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import type { SpaceConfig } from '@/lib/spaceSchema'
+import { getSessionAssets } from '../state/sessionAssets'
 
 /**
  * 预览容器 — iframe 挂 /admin/preview，postMessage 推送 config。
  * iframe 的独立 window 保证 ScrollTrigger 滚动动效正确（产品核心卖点），
  * 同时隔离 theme 全局类名与编辑器 Tailwind 的冲突。
  * 支持 桌面/移动（390px）视口切换。
+ * 会话资源映射（刚上传图片的 dataUrl 预览）随消息一起传给 iframe（独立 bundle 不共享模块单例）。
  */
 export function PreviewFrame({ config, pageId }: {
   config: SpaceConfig
@@ -25,26 +27,17 @@ export function PreviewFrame({ config, pageId }: {
     return () => iframe.removeEventListener('load', handleLoad)
   }, [])
 
-  // config 变更 → debounce 150ms → postMessage
+  // config 变更 → debounce 150ms → postMessage（带会话资源映射）
   useEffect(() => {
     if (!ready) return
     const timer = setTimeout(() => {
       iframeRef.current?.contentWindow?.postMessage(
-        { type: 'space-config', config, pageId: previewPage },
+        { type: 'space-config', config, pageId: previewPage, assets: getSessionAssets() },
         window.location.origin,
       )
     }, 150)
     return () => clearTimeout(timer)
   }, [config, previewPage, ready])
-
-  // iframe 重载后需重新推送最新 config（子页面就绪时会 postMessage 通知，这里也监听）
-  useEffect(() => {
-    if (!ready) return
-    iframeRef.current?.contentWindow?.postMessage(
-      { type: 'space-config', config, pageId: previewPage },
-      window.location.origin,
-    )
-  }, [ready]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // 子页面就绪通知（重载场景）→ 立即推一帧
   useEffect(() => {
@@ -53,7 +46,7 @@ export function PreviewFrame({ config, pageId }: {
       if ((event.data as { type?: string })?.type === 'preview-ready') {
         setReady(true)
         iframeRef.current?.contentWindow?.postMessage(
-          { type: 'space-config', config, pageId: previewPage },
+          { type: 'space-config', config, pageId: previewPage, assets: getSessionAssets() },
           window.location.origin,
         )
       }

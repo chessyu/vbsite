@@ -40,7 +40,18 @@ export const onRequestPut = withEnv<PagesContext>(async ({ request, params }, en
     )
   }
 
-  // 3. 单 commit 提交（JSON 2 空格缩进，与仓库现有格式一致）
+  // 3. 剥离会话级预览数据（blob URL 只在编辑器会话内有意义，不得入库）
+  for (const page of parsed.config.pages) {
+    for (const block of page.blocks) {
+      const data = block.data as Record<string, unknown> | undefined
+      if (!data) continue
+      const video = data.video as Record<string, unknown> | undefined
+      if (video && 'previewUrl' in video) delete video.previewUrl
+      if ('posterPreviewUrl' in data) delete data.posterPreviewUrl
+    }
+  }
+
+  // 4. 单 commit 提交（JSON 2 空格缩进，与仓库现有格式一致）
   const content = JSON.stringify(parsed.config, null, 2)
   const result = await commitFiles(
     env,

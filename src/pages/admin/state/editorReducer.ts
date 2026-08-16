@@ -23,6 +23,7 @@ export type EditorAction =
   | { type: 'SET_THEME'; patch: Partial<SpaceConfig['theme']> }
   | { type: 'SET_PAGE_META'; pageIdx: number; patch: Partial<SpaceConfig['pages'][number]> }
   | { type: 'MOVE_BLOCK'; pageIdx: number; blockIdx: number; dir: -1 | 1 }
+  | { type: 'REORDER_BLOCKS'; pageIdx: number; blocks: BlockDeclaration[] }
   | { type: 'ADD_BLOCK'; pageIdx: number; blockType: BlockType }
   | { type: 'REMOVE_BLOCK'; pageIdx: number; blockIdx: number }
   | { type: 'UPDATE_BLOCK_DATA'; pageIdx: number; blockIdx: number; updater: (data: Record<string, unknown>) => Record<string, unknown> }
@@ -59,6 +60,13 @@ export function editorReducer(state: EditorState | null, action: EditorAction): 
     case 'SET_PAGE_META': {
       const pages = state.draft.pages.map((page, i) =>
         i === action.pageIdx ? { ...page, ...action.patch } : page,
+      )
+      return { ...state, draft: { ...state.draft, pages } }
+    }
+
+    case 'REORDER_BLOCKS': {
+      const pages = state.draft.pages.map((page, i) =>
+        i === action.pageIdx ? { ...page, blocks: action.blocks } : page,
       )
       return { ...state, draft: { ...state.draft, pages } }
     }
@@ -135,6 +143,20 @@ function defaultBlockData(type: BlockType): Record<string, unknown> {
   switch (type) {
     case 'hero':
       return { name: '姓名', title: '头衔', subtitle: '', tagline: '', cta: [], useAurora: false }
+    case 'video-hero':
+      return {
+        video: { url: '' },
+        poster: '',
+        heightVh: 400,
+        captions: [
+          { text: '第一句：抓住来访者的注意力', from: 0.05, to: 0.32, position: 'center', size: 'lg', kicker: '' },
+          { text: '第二句：展开你的故事', from: 0.38, to: 0.62, position: 'center', size: 'lg', kicker: '' },
+          { text: '第三句：给出行动的理由', from: 0.68, to: 0.86, position: 'center', size: 'lg', kicker: '' },
+        ],
+        fallbackHeading: '标题',
+        fallbackSub: '',
+        cta: { label: '了解更多', href: '#next' },
+      }
     case 'about':
       return { avatar: '', bio: '个人简介…', tags: [], heading: '关于我' }
     case 'experience':

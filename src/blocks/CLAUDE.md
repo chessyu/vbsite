@@ -18,6 +18,7 @@ interface BlockProps<T> { data: T; theme: ThemeConfig; index: number }
 | type | 职责 | 数据类型 |
 |------|------|---------|
 | `hero` | 首屏英雄区（名字/头衔/CTA） | [hero/CLAUDE.md](hero/CLAUDE.md) |
+| `video-hero` | 电影感滚动视频首屏（scroll-scrub + 字幕带 + 五档降级） | [video-hero/CLAUDE.md](video-hero/CLAUDE.md) |
 | `about` | 关于我（头像/简介/标签） | [about/CLAUDE.md](about/CLAUDE.md) |
 | `experience` | 工作经历时间轴 | [experience/CLAUDE.md](experience/CLAUDE.md) |
 | `skills` | 技能进度条 | [skills/CLAUDE.md](skills/CLAUDE.md) |
