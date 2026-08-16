@@ -19,6 +19,49 @@
       "title": "CheesyU - 全栈开发工程师",
       "blocks": [
         {
+          "type": "video-hero",
+          "data": {
+            "video": {
+              "url": "/users/cheesyu/videos/2026-08-15-21-17-28-scrub-vdy1nw.mp4",
+              "bytes": 5290484
+            },
+            "poster": "/users/cheesyu/images/2026-08-15-21-17-28-poster-cus5dq.png",
+            "heightVh": 800,
+            "captions": [
+              {
+                "text": "第一句：抓住来访者的注意力",
+                "from": 0.02,
+                "to": 0.15,
+                "position": "center",
+                "size": "lg",
+                "kicker": ""
+              },
+              {
+                "text": "第二句：展开你的故事",
+                "from": 0.38,
+                "to": 0.62,
+                "position": "center",
+                "size": "lg",
+                "kicker": ""
+              },
+              {
+                "text": "第三句：给出行动的理由",
+                "from": 0.7,
+                "to": 0.9,
+                "position": "center",
+                "size": "lg",
+                "kicker": ""
+              }
+            ],
+            "fallbackHeading": "这是一段标题",
+            "fallbackSub": "副文案",
+            "cta": {
+              "label": "了解更多",
+              "href": "#next"
+            }
+          }
+        },
+        {
           "type": "hero",
           "data": {
             "name": "CheesyU",
@@ -26,9 +69,16 @@
             "subtitle": "FULL-STACK ENGINEER",
             "tagline": "5 年全栈经验，热爱用技术解决有趣的问题。",
             "cta": [
-              { "label": "了解更多", "href": "#about" },
-              { "label": "联系我", "href": "#contact" }
-            ]
+              {
+                "label": "了解更多",
+                "href": "#about"
+              },
+              {
+                "label": "联系我",
+                "href": "#contact"
+              }
+            ],
+            "useAurora": true
           }
         },
         {
@@ -36,7 +86,13 @@
           "data": {
             "avatar": "🧑‍💻",
             "bio": "5 年全栈开发经验，擅长 React/Node.js 技术栈。曾独立完成多个从 0 到 1 的产品开发，对用户体验和工程质量有极致追求。业余时间喜欢折腾开源项目和做动效设计。",
-            "tags": ["React", "Node.js", "TypeScript", "动效设计", "全栈开发"]
+            "tags": [
+              "React",
+              "Node.js",
+              "TypeScript",
+              "动效设计",
+              "全栈开发"
+            ]
           }
         },
         {
@@ -113,9 +169,81 @@
             "email": "cheesyu@example.com",
             "phone": "+86 139-0000-0000",
             "socials": [
-              { "icon": "💻", "title": "GitHub" },
-              { "icon": "🐦", "title": "Twitter" },
-              { "icon": "💬", "title": "微信" }
+              {
+                "icon": "💻",
+                "title": "GitHub"
+              },
+              {
+                "icon": "🐦",
+                "title": "Twitter"
+              },
+              {
+                "icon": "💬",
+                "title": "微信"
+              }
+            ]
+          }
+        },
+        {
+          "type": "services",
+          "data": {
+            "heading": "服务",
+            "subheading": "",
+            "services": [
+              {
+                "title": "服务名",
+                "icon": "✨",
+                "desc": "描述"
+              }
+            ]
+          }
+        },
+        {
+          "type": "featured-project",
+          "data": {
+            "heading": "深度案例",
+            "project": {
+              "title": "项目名",
+              "desc": "描述",
+              "tags": [],
+              "icon": "🚀"
+            }
+          }
+        },
+        {
+          "type": "gallery",
+          "data": {
+            "heading": "精选作品",
+            "subheading": "",
+            "projects": [
+              {
+                "title": "作品名而恶",
+                "category": "分类asdf",
+                "desc": "描述asdfasdf",
+                "tags": [
+                  "dferdsaf"
+                ],
+                "wide": false,
+                "icon": "test-01"
+              },
+              {
+                "title": "作品名2段报错 ",
+                "category": "分类奇才",
+                "desc": "描述dasf",
+                "tags": [
+                  "asdf"
+                ],
+                "icon": "沃克尔奥神队"
+              },
+              {
+                "title": "作品名2",
+                "category": "分类有",
+                "desc": "描述asdf",
+                "tags": [
+                  "遥"
+                ],
+                "icon": "gfas 仍"
+              }
             ]
           }
         }
@@ -135,8 +263,14 @@
             "tagline": "用设计讲述故事，用代码创造体验。专注于品牌视觉、UI/UX 设计与创意动效。",
             "useAurora": true,
             "cta": [
-              { "label": "查看作品", "href": "#gallery" },
-              { "label": "联系我", "href": "#contact" }
+              {
+                "label": "查看作品",
+                "href": "#gallery"
+              },
+              {
+                "label": "联系我",
+                "href": "#contact"
+              }
             ]
           }
         },
@@ -151,7 +285,11 @@
                 "category": "品牌设计",
                 "image": "/users/cheesyu/images/project-branding.jpg",
                 "desc": "从 Logo 到完整的品牌视觉体系，包含色彩、字体、图标与应用规范。",
-                "tags": ["品牌全案", "VI 设计", "视觉规范"],
+                "tags": [
+                  "品牌全案",
+                  "VI 设计",
+                  "视觉规范"
+                ],
                 "wide": true
               },
               {
@@ -159,14 +297,20 @@
                 "category": "APP 设计",
                 "image": "/users/cheesyu/images/project-healthapp.jpg",
                 "desc": "清新简洁的健康数据可视化界面设计。",
-                "tags": ["UI 设计", "数据可视化"]
+                "tags": [
+                  "UI 设计",
+                  "数据可视化"
+                ]
               },
               {
                 "title": "电商平台重构",
                 "category": "网页设计",
                 "image": "/users/cheesyu/images/project-ecommerce.jpg",
                 "desc": "现代化电商体验设计，提升转化率 35%。",
-                "tags": ["电商", "体验优化"]
+                "tags": [
+                  "电商",
+                  "体验优化"
+                ]
               },
               {
                 "title": "产品宣传动效",
@@ -179,7 +323,12 @@
                 "category": "系统设计",
                 "image": "/users/cheesyu/images/project-designsystem.jpg",
                 "desc": "包含 200+ 组件的完整设计系统。",
-                "tags": ["设计系统", "组件规范", "Figma", "Token 化"],
+                "tags": [
+                  "设计系统",
+                  "组件规范",
+                  "Figma",
+                  "Token 化"
+                ],
                 "wide": true
               },
               {
@@ -283,8 +432,14 @@
             "tagline": "用设计讲述故事，用代码创造体验。专注于品牌视觉、UI/UX 设计与创意动效。",
             "useAurora": true,
             "cta": [
-              { "label": "查看作品", "href": "#gallery" },
-              { "label": "联系我", "href": "#contact" }
+              {
+                "label": "查看作品",
+                "href": "#gallery"
+              },
+              {
+                "label": "联系我",
+                "href": "#contact"
+              }
             ]
           }
         },
@@ -299,7 +454,11 @@
                 "category": "品牌设计",
                 "image": "/users/cheesyu/images/project-branding.jpg",
                 "desc": "从 Logo 到完整的品牌视觉体系，包含色彩、字体、图标与应用规范。",
-                "tags": ["品牌全案", "VI 设计", "视觉规范"],
+                "tags": [
+                  "品牌全案",
+                  "VI 设计",
+                  "视觉规范"
+                ],
                 "wide": true
               },
               {
@@ -307,14 +466,20 @@
                 "category": "APP 设计",
                 "image": "/users/cheesyu/images/project-healthapp.jpg",
                 "desc": "清新简洁的健康数据可视化界面设计。",
-                "tags": ["UI 设计", "数据可视化"]
+                "tags": [
+                  "UI 设计",
+                  "数据可视化"
+                ]
               },
               {
                 "title": "电商平台重构",
                 "category": "网页设计",
                 "image": "/users/cheesyu/images/project-ecommerce.jpg",
                 "desc": "现代化电商体验设计，提升转化率 35%。",
-                "tags": ["电商", "体验优化"]
+                "tags": [
+                  "电商",
+                  "体验优化"
+                ]
               },
               {
                 "title": "产品宣传动效",
@@ -327,7 +492,12 @@
                 "category": "系统设计",
                 "image": "/users/cheesyu/images/project-designsystem.jpg",
                 "desc": "包含 200+ 组件的完整设计系统。",
-                "tags": ["设计系统", "组件规范", "Figma", "Token 化"],
+                "tags": [
+                  "设计系统",
+                  "组件规范",
+                  "Figma",
+                  "Token 化"
+                ],
                 "wide": true
               },
               {
