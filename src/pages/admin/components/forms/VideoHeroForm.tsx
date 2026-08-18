@@ -39,7 +39,7 @@ export function VideoHeroForm({ data, userId, token, onChange }: {
 
       <VideoField
         label="滚动视频"
-        hint="上传后浏览器内自动转码（短关键帧 + 压缩）并提取海报帧，请耐心等待"
+        hint="建议 8–20 秒（最长 30 秒，超限选择文件后立即提示）；浏览器内自动转码（短关键帧 + 压缩）并提取海报帧"
         userId={userId}
         token={token}
         value={data.video.url}
@@ -112,10 +112,9 @@ export function VideoHeroForm({ data, userId, token, onChange }: {
               {/* 出现时机组 */}
               <div className="space-y-2 border-t border-stone-200 pt-2">
                 <p className="text-[10px] font-semibold uppercase tracking-wider text-stone-400">出现时机</p>
-                <div className="grid grid-cols-2 gap-2">
-                  <NumberField label="区间起点" value={item.from} min={0} max={0.95} step={0.01} onChange={v => update({ from: Math.min(v, item.to - 0.02) })} />
-                  <NumberField label="区间终点" value={item.to} min={0.05} max={1} step={0.01} onChange={v => update({ to: Math.max(v, item.from + 0.02) })} />
-                </div>
+                <NumberField label="区间起点" value={item.from} min={0} max={1 - TAIL - 0.02} step={0.01} onChange={v => update({ from: Math.min(v, item.to - 0.02) })} />
+                <NumberField label="区间终点" value={item.to} min={0.05} max={1 - TAIL} step={0.01} onChange={v => update({ to: Math.max(v, item.from + 0.02) })} />
+                <p className="text-[11px] text-stone-400">滚动进度 0–{1 - TAIL}，结尾 10%（{1 - TAIL}–1）留给 CTA 静置</p>
                 <div className={`text-[11px] ${paceVh < READABLE_VH ? 'text-amber-600' : 'text-stone-400'}`}>
                   占 {paceLabel(item, heightVh)} 滚动距离
                   {paceVh < READABLE_VH && ' ⚠️ 短于可读平台（建议 ≥80vh）'}
