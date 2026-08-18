@@ -47,7 +47,7 @@ function arrayBufferToBase64(buffer: ArrayBuffer): string {
 }
 
 /**
- * POST /api/space/:userId/assets — 上传图片到 public/users/<userId>/images/，
+ * POST /api/space/:userId/assets — 上传图片/视频到 users/<userId>/assets/，
  * 立即单独 commit（这样 publish 通常只剩 space.json 一个文件，重试成本低；
  * 中间态只是「多一张未引用的图」，无数据风险）。
  * 响应同时返回 base64 data URL 供编辑会话内预览。
@@ -93,12 +93,11 @@ export const onRequestPost = withEnv<PagesContext>(async ({ request, params }, e
 
     const buffer = await file.arrayBuffer()
     const base64 = arrayBufferToBase64(buffer)
-    const dir = isVideo ? 'videos' : 'images'
-    const path = `public/users/${params.userId}/${dir}/${assetName(file.name, ext)}`
+    const path = `users/${params.userId}/assets/${assetName(file.name, ext)}`
 
     entries.push({ path, content: base64, encoding: 'base64' as const })
     results.push({
-      path: `/${path.replace(/^public\//, '')}`,
+      path: `/${path}`,
       // 视频不回 base64 dataUrl（大体积会撑爆编辑器内存与 postMessage），会话内预览用本地 blob
       dataUrl: isVideo ? undefined : `data:${file.type};base64,${base64}`,
       bytes: file.size,

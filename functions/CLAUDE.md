@@ -36,7 +36,7 @@ functions/api/space/[userId].ts → GET /api/space/:userId
 | POST | `/api/admin/edit-link` | admin | 生成临时编辑链接（默认 24h，上限 168h） |
 | GET | `/api/space/:userId` | edit token / admin | 读 space.json（**统一从 GitHub 读**） |
 | PUT | `/api/space/:userId/publish` | edit token / admin | 严格校验后单 commit 提交 |
-| POST | `/api/space/:userId/assets` | edit token / admin | 图片上传到 `public/users/<id>/images/`，立即单独 commit |
+| POST | `/api/space/:userId/assets` | edit token / admin | 图片/视频上传到 `users/<id>/assets/`，立即单独 commit |
 
 ## 关键设计决策
 
