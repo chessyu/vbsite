@@ -149,10 +149,11 @@ vbsite/
 单用户构建（VITE_BUILD_USER）→ 该用户页面，根路径渲染（不含 /admin）
 ```
 
-**客户图片资产约定：**
-- 图片文件放 `public/users/<客户名>/images/`（不放 `users/`——dev 中间件把 `/users/*` 响应固定为 JSON）
-- space.json 中引用写**绝对路径** `/users/<客户名>/images/xxx.jpg`（相对路径在子路径页面会解析错）
-- `public/` 在 dev 与 generate 两种模式下行为一致，无需额外拷贝逻辑
+**客户数据与资产约定：**
+- `users/<客户名>/` 是**唯一**数据目录：`space.json` + `assets/`（图片/视频统一放这里，admin 上传端点自动 commit 到此）
+- space.json 中引用写**绝对路径** `/users/<客户名>/assets/xxx.jpg`（相对路径在子路径页面会解析错）
+- dev 模式：vite 中间件服务 `/users/*`——space.json 优先读 GitHub raw（发布后立即可见，本地文件可能落后），assets/ 本地优先、GitHub raw 兜底（未 pull 也能加载）；未配 GITHUB_PAT 时退化为纯本地
+- 生产构建：`copyUsersToDist` 插件把 `users/` 拷进 `dist/users/`（Vite 只拷 `public/`，不拷的话线上 space.json 会命中 SPA fallback）
 
 > **每个目录都有独立的 `CLAUDE.md`** 说明其职责、文件清单与约定。详见各目录下的 CLAUDE.md。
 

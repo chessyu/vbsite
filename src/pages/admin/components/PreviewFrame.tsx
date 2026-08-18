@@ -55,6 +55,14 @@ export function PreviewFrame({ config, pageId }: {
     return () => window.removeEventListener('message', handleChildMessage)
   }, [config, previewPage])
 
+  // 视口切换 → 通知 iframe 刷新 ScrollTrigger。
+  // 外层 max-w 变化会让 iframe 内布局重排（页高变化），但 GSAP 对 iframe 元素缩放
+  // 的自动 resize 刷新在此场景不生效——不手动 refresh，入场触发点还是旧桌面坐标，
+  // 移动预览下所有入场动画会死锁在 autoAlpha:0（已实测复现）。
+  useEffect(() => {
+    iframeRef.current?.contentWindow?.postMessage({ type: 'viewport-change' }, window.location.origin)
+  }, [viewport])
+
   return (
     <div className="flex h-full flex-col">
       {/* 工具条 */}
@@ -84,6 +92,13 @@ export function PreviewFrame({ config, pageId }: {
         </div>
         {!ready && <span className="text-[11px] text-stone-400">预览加载中…</span>}
       </div>
+
+      {/* 移动视口如实反映真实手机效果（静态降级），提示避免误认为动效丢失 */}
+      {viewport === 'mobile' && (
+        <div className="border-b border-amber-200 bg-amber-50 px-3 py-1 text-[11px] leading-relaxed text-amber-700">
+          📱 移动视口 = 真实手机效果：视频首屏自动降级为静态海报、视差等仅桌面动效已关闭（属预期）
+        </div>
+      )}
 
       {/* iframe */}
       <div className="flex-1 overflow-hidden bg-stone-200 p-2">

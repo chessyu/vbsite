@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { BlockRenderer } from '@/blocks/BlockRenderer'
 import Footer from '@/components/shared/Footer'
 import CursorGlow from '@/components/ui/CursorGlow'
+import { ScrollTrigger } from '@/lib/gsap'
 import type { SpaceConfig } from '@/lib/spaceSchema'
 
 /**
@@ -29,6 +30,13 @@ export default function PreviewPage() {
       if (data?.type === 'space-config' && data.config) {
         if (data.assets) setAssetMap(data.assets)
         setPageId({ config: data.config, pageId: data.pageId ?? 'home' })
+        return
+      }
+      // 父窗口视口切换（桌面 ⇄ 移动）：外层容器宽度变化让本页布局重排，
+      // 但 GSAP 的自动 resize 刷新对 iframe 元素缩放不生效——手动 refresh
+      // 重算触发点，否则入场动画死锁在初始隐藏态。延迟等布局稳定。
+      if (data?.type === 'viewport-change') {
+        setTimeout(() => ScrollTrigger.refresh(), 120)
       }
     }
     window.addEventListener('message', handleMessage)

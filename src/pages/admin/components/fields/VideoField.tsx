@@ -18,7 +18,8 @@ export interface VideoFieldResult {
 
 type Phase =
   | { stage: 'idle' }
-  | { stage: 'loading' }                          // 加载 ffmpeg wasm（仅首次）
+  | { stage: 'probing' }                           // 预检：探测时长/分辨率（超 30s 秒级拦截）
+  | { stage: 'loading' }                           // 加载 ffmpeg wasm（仅首次）
   | { stage: 'transcoding'; progress: number }     // 转码 0–1
   | { stage: 'poster' }                            // 提取海报帧
   | { stage: 'uploading' }
@@ -27,6 +28,7 @@ type Phase =
 
 const PHASE_LABEL: Record<Phase['stage'], string> = {
   idle: '',
+  probing: '解析视频信息…',
   loading: '加载视频处理引擎…（首次约 30MB，之后有缓存）',
   transcoding: '转码中',
   poster: '提取海报帧…',
@@ -69,7 +71,9 @@ export function VideoField({ label, hint, userId, token, value, onChange, poster
           ? { stage: 'loading' }
           : p.stage === 'poster'
             ? { stage: 'poster' }
-            : { stage: 'transcoding', progress: p.progress })
+            : p.stage === 'probing'
+              ? { stage: 'probing' }
+              : { stage: 'transcoding', progress: p.progress })
       })
 
       // 2. 视频 + 海报一起上传
@@ -77,7 +81,7 @@ export function VideoField({ label, hint, userId, token, value, onChange, poster
       const { spaceApi } = await import('@/lib/admin/api')
       const { files } = await spaceApi.uploadAssets(userId, [video, poster], token)
       const videoUploaded = files.find(f => f.path.endsWith('.mp4'))
-      const posterUploaded = files.find(f => f.path.endsWith('.jpg'))
+      const posterUploaded = files.find(f => f.path.endsWith('.png') || f.path.endsWith('.jpg'))
 
       // 3. 回填（会话内用本地 blob 预览，远端文件刚 commit 还未部署）
       const localPreview = URL.createObjectURL(video)
@@ -151,7 +155,7 @@ export function VideoField({ label, hint, userId, token, value, onChange, poster
                   style={{
                     width: phase.stage === 'transcoding'
                       ? `${Math.max(3, phase.progress * 100)}%`
-                      : phase.stage === 'loading' ? '15%' : '90%',
+                      : phase.stage === 'loading' ? '15%' : phase.stage === 'probing' ? '8%' : '90%',
                   }}
                 />
               </div>
