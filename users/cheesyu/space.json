@@ -19,49 +19,6 @@
       "title": "CheesyU - 全栈开发工程师",
       "blocks": [
         {
-          "type": "video-hero",
-          "data": {
-            "video": {
-              "url": "/users/cheesyu/assets/2026-08-15-21-17-28-scrub-vdy1nw.mp4",
-              "bytes": 5290484
-            },
-            "poster": "/users/cheesyu/assets/2026-08-15-21-17-28-poster-cus5dq.png",
-            "heightVh": 800,
-            "captions": [
-              {
-                "text": "第一句：抓住来访者的注意力",
-                "from": 0.02,
-                "to": 0.15,
-                "position": "center",
-                "size": "lg",
-                "kicker": ""
-              },
-              {
-                "text": "第二句：展开你的故事",
-                "from": 0.38,
-                "to": 0.62,
-                "position": "center",
-                "size": "lg",
-                "kicker": ""
-              },
-              {
-                "text": "第三句：给出行动的理由",
-                "from": 0.7,
-                "to": 0.9,
-                "position": "center",
-                "size": "lg",
-                "kicker": ""
-              }
-            ],
-            "fallbackHeading": "这是一段标题",
-            "fallbackSub": "副文案",
-            "cta": {
-              "label": "了解更多",
-              "href": "#next"
-            }
-          }
-        },
-        {
           "type": "hero",
           "data": {
             "name": "CheesyU",
@@ -77,8 +34,7 @@
                 "label": "联系我",
                 "href": "#contact"
               }
-            ],
-            "useAurora": true
+            ]
           }
         },
         {
@@ -185,66 +141,46 @@
           }
         },
         {
-          "type": "services",
+          "type": "video-hero",
           "data": {
-            "heading": "服务",
-            "subheading": "",
-            "services": [
+            "video": {
+              "url": "/users/cheesyu/videos/vb-test-input-scrub-d1tf3i.mp4",
+              "bytes": 45684
+            },
+            "poster": "/users/cheesyu/images/vb-test-input-poster-3xln4q.png",
+            "heightVh": 400,
+            "captions": [
               {
-                "title": "服务名",
-                "icon": "✨",
-                "desc": "描述"
+                "text": "第一句：抓住来访者的注意力",
+                "from": 0.05,
+                "to": 0.32,
+                "position": "center",
+                "size": "lg",
+                "kicker": ""
+              },
+              {
+                "text": "第二句：展开你的故事",
+                "from": 0.38,
+                "to": 0.62,
+                "position": "center",
+                "size": "lg",
+                "kicker": ""
+              },
+              {
+                "text": "第三句：给出行动的理由",
+                "from": 0.68,
+                "to": 0.86,
+                "position": "center",
+                "size": "lg",
+                "kicker": ""
               }
-            ]
-          }
-        },
-        {
-          "type": "featured-project",
-          "data": {
-            "heading": "深度案例",
-            "project": {
-              "title": "项目名",
-              "desc": "描述",
-              "tags": [],
-              "icon": "🚀"
+            ],
+            "fallbackHeading": "标题",
+            "fallbackSub": "",
+            "cta": {
+              "label": "了解更多",
+              "href": "#next"
             }
-          }
-        },
-        {
-          "type": "gallery",
-          "data": {
-            "heading": "精选作品",
-            "subheading": "",
-            "projects": [
-              {
-                "title": "作品名而恶",
-                "category": "分类asdf",
-                "desc": "描述asdfasdf",
-                "tags": [
-                  "dferdsaf"
-                ],
-                "wide": false,
-                "icon": "test-01"
-              },
-              {
-                "title": "作品名2段报错 ",
-                "category": "分类奇才",
-                "desc": "描述dasf",
-                "tags": [
-                  "asdf"
-                ],
-                "icon": "沃克尔奥神队"
-              },
-              {
-                "title": "作品名2",
-                "category": "分类有",
-                "desc": "描述asdf",
-                "tags": [
-                  "遥"
-                ],
-                "icon": "gfas 仍"
-              }
-            ]
           }
         }
       ]
@@ -283,7 +219,7 @@
               {
                 "title": "科技公司全案设计",
                 "category": "品牌设计",
-                "image": "/users/cheesyu/assets/project-branding.jpg",
+                "image": "/users/cheesyu/images/project-branding.jpg",
                 "desc": "从 Logo 到完整的品牌视觉体系，包含色彩、字体、图标与应用规范。",
                 "tags": [
                   "品牌全案",
@@ -295,7 +231,7 @@
               {
                 "title": "健康追踪 App",
                 "category": "APP 设计",
-                "image": "/users/cheesyu/assets/project-healthapp.jpg",
+                "image": "/users/cheesyu/images/project-healthapp.jpg",
                 "desc": "清新简洁的健康数据可视化界面设计。",
                 "tags": [
                   "UI 设计",
@@ -305,7 +241,7 @@
               {
                 "title": "电商平台重构",
                 "category": "网页设计",
-                "image": "/users/cheesyu/assets/project-ecommerce.jpg",
+                "image": "/users/cheesyu/images/project-ecommerce.jpg",
                 "desc": "现代化电商体验设计，提升转化率 35%。",
                 "tags": [
                   "电商",
@@ -321,7 +257,7 @@
               {
                 "title": "企业级组件库",
                 "category": "系统设计",
-                "image": "/users/cheesyu/assets/project-designsystem.jpg",
+                "image": "/users/cheesyu/images/project-designsystem.jpg",
                 "desc": "包含 200+ 组件的完整设计系统。",
                 "tags": [
                   "设计系统",
@@ -452,7 +388,7 @@
               {
                 "title": "科技公司全案设计",
                 "category": "品牌设计",
-                "image": "/users/cheesyu/assets/project-branding.jpg",
+                "image": "/users/cheesyu/images/project-branding.jpg",
                 "desc": "从 Logo 到完整的品牌视觉体系，包含色彩、字体、图标与应用规范。",
                 "tags": [
                   "品牌全案",
@@ -464,7 +400,7 @@
               {
                 "title": "健康追踪 App",
                 "category": "APP 设计",
-                "image": "/users/cheesyu/assets/project-healthapp.jpg",
+                "image": "/users/cheesyu/images/project-healthapp.jpg",
                 "desc": "清新简洁的健康数据可视化界面设计。",
                 "tags": [
                   "UI 设计",
@@ -474,7 +410,7 @@
               {
                 "title": "电商平台重构",
                 "category": "网页设计",
-                "image": "/users/cheesyu/assets/project-ecommerce.jpg",
+                "image": "/users/cheesyu/images/project-ecommerce.jpg",
                 "desc": "现代化电商体验设计，提升转化率 35%。",
                 "tags": [
                   "电商",
@@ -490,7 +426,7 @@
               {
                 "title": "企业级组件库",
                 "category": "系统设计",
-                "image": "/users/cheesyu/assets/project-designsystem.jpg",
+                "image": "/users/cheesyu/images/project-designsystem.jpg",
                 "desc": "包含 200+ 组件的完整设计系统。",
                 "tags": [
                   "设计系统",
