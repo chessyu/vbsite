@@ -1,30 +1,73 @@
 {
   "space": {
     "username": "cheesyu",
-    "displayName": "CheesyU",
+    "displayName": "Chess.yu",
     "footer": "© 2024 CheesyU. 用 ❤️ 打造"
   },
   "theme": {
     "mode": "light",
-    "background": "linear-gradient(180deg, #fef3c7 0%, #fff7ed 50%, #fce7f3 100%)",
+    "background": "#fafaf9",
     "textColor": "text-stone-900",
-    "subTextColor": "text-stone-600",
-    "mutedTextColor": "text-stone-500",
-    "primaryGradient": "from-warm-500 to-accent-pink-500"
+    "subTextColor": "text-stone-500",
+    "mutedTextColor": "text-stone-400",
+    "primaryGradient": "from-stone-700 to-stone-900"
   },
   "pages": [
     {
       "id": "home",
       "path": "/",
-      "title": "CheesyU - 全栈开发工程师",
+      "title": "首页",
       "blocks": [
+        {
+          "type": "video-hero",
+          "data": {
+            "video": {
+              "url": "/users/cheesyu/assets/2026-08-19-09-26-18-scrub-t8v1zu.mp4",
+              "bytes": 886845
+            },
+            "poster": "/users/cheesyu/assets/2026-08-19-09-26-18-poster-phf5t7.png",
+            "heightVh": 800,
+            "captions": [
+              {
+                "text": "第一句：抓住来访者的注意力",
+                "from": 0.02,
+                "to": 0.15,
+                "position": "center",
+                "size": "lg",
+                "kicker": ""
+              },
+              {
+                "text": "第二句：展开你的故事",
+                "from": 0.38,
+                "to": 0.62,
+                "position": "center",
+                "size": "lg",
+                "kicker": ""
+              },
+              {
+                "text": "第三句：给出行动的理由",
+                "from": 0.7,
+                "to": 0.9,
+                "position": "center",
+                "size": "lg",
+                "kicker": ""
+              }
+            ],
+            "fallbackHeading": "这是一段标题",
+            "fallbackSub": "副文案",
+            "cta": {
+              "label": "了解更多",
+              "href": "#next"
+            }
+          }
+        },
         {
           "type": "hero",
           "data": {
-            "name": "CheesyU",
-            "title": "全栈开发工程师",
+            "name": "余老豆",
+            "title": "前端开发工程师",
             "subtitle": "FULL-STACK ENGINEER",
-            "tagline": "5 年全栈经验，热爱用技术解决有趣的问题。",
+            "tagline": "热爱界面设计与用户体验，专注稳定、高性能、富体验前端技术。",
             "cta": [
               {
                 "label": "了解更多",
@@ -34,44 +77,38 @@
                 "label": "联系我",
                 "href": "#contact"
               }
-            ]
-          }
-        },
-        {
-          "type": "about",
-          "data": {
-            "avatar": "🧑‍💻",
-            "bio": "5 年全栈开发经验，擅长 React/Node.js 技术栈。曾独立完成多个从 0 到 1 的产品开发，对用户体验和工程质量有极致追求。业余时间喜欢折腾开源项目和做动效设计。",
-            "tags": [
-              "React",
-              "Node.js",
-              "TypeScript",
-              "动效设计",
-              "全栈开发"
-            ]
+            ],
+            "useAurora": true
           }
         },
         {
           "type": "experience",
           "data": {
+            "heading": "工作经历",
             "experiences": [
               {
-                "period": "2023 — 至今",
-                "role": "高级全栈工程师",
-                "company": "自由职业",
-                "desc": "独立承接 Web 定制项目，专注于高动效静态页面的设计与开发，已服务 20+ 客户。"
-              },
-              {
-                "period": "2021 — 2023",
+                "period": "2021.11 - 2023.02",
                 "role": "前端开发工程师",
-                "company": "某科技公司",
-                "desc": "负责核心产品前端架构升级，引入微前端方案，页面加载速度提升 60%。"
+                "company": "深圳市客户通科技有限公司",
+                "desc": "负责公共组件库、脚手架的开发及维护，移动端与PC端系统的业务开发和私有化定制开发等。"
               },
               {
-                "period": "2019 — 2021",
-                "role": "初级开发工程师",
-                "company": "创业公司",
-                "desc": "参与早期产品从 0 到 1 的全栈开发，一个人扛起前端 + 后端 + 运维。"
+                "period": "2020.09 - 2021.11",
+                "role": "前端开发工程师",
+                "company": "深圳市楚星软件股份有限公司",
+                "desc": "负责钉钉轻应用、钉钉消息推送的需求对接，难点需求调研，开发货办调补货工具、维护工厂条码系统、H5 战报应用。"
+              },
+              {
+                "period": "2019.10 - 2020.09",
+                "role": "前端开发工程师",
+                "company": "深圳市海拓时代科技有限公司",
+                "desc": "负责工程化项目搭建，开发和维护公共组件库。业务中台的前端开发、数据报表系统、游戏中心平台等。"
+              },
+              {
+                "period": "2017.07 - 2019.10",
+                "role": "前端开发工程师",
+                "company": "深圳市凌启电子股份有限公司",
+                "desc": "负责可配置化流程表单、企业 OA 管理系统、开发和扩展 Jq 公共插件、部分系统的前后端业务模块等。"
               }
             ]
           }
@@ -79,6 +116,7 @@
         {
           "type": "skills",
           "data": {
+            "heading": "技术栈",
             "skills": [
               {
                 "name": "React / Vue",
@@ -99,19 +137,19 @@
                 "color": "from-warm-400 to-warm-600"
               },
               {
-                "name": "动效设计",
+                "name": "Webpack",
                 "level": 90,
                 "icon": "🎬",
                 "color": "from-accent-pink-400 to-accent-pink-600"
               },
               {
-                "name": "UI/UX",
+                "name": "JavaScript",
                 "level": 80,
                 "icon": "🎨",
                 "color": "from-warm-400 to-warm-600"
               },
               {
-                "name": "Docker / CI",
+                "name": "微前端",
                 "level": 78,
                 "icon": "🐳",
                 "color": "from-accent-pink-400 to-accent-pink-600"
@@ -120,73 +158,132 @@
           }
         },
         {
-          "type": "contact",
+          "type": "featured-project",
           "data": {
-            "email": "cheesyu@example.com",
-            "phone": "+86 139-0000-0000",
-            "socials": [
+            "heading": "核心项目",
+            "project": {
+              "title": "客户通 SAAS 系统",
+              "desc": "基于 qiankun 的微前端系统，已接入 10+ 个子应用，为企业微信生态提供多端应用。",
+              "tags": [
+                "React",
+                "TypeScript",
+                "qiankun",
+                "MobX"
+              ],
+              "icon": "🚀"
+            }
+          }
+        },
+        {
+          "type": "gallery",
+          "data": {
+            "heading": "精选作品",
+            "subheading": "",
+            "projects": [
               {
-                "icon": "💻",
-                "title": "GitHub",
-                "url": "#",
-                "bg": "bg-stone-500"
+                "title": "问卷调查 (Editor)",
+                "category": "表单工具",
+                "desc": "预设 12 种题型，基于 react-dnd 实现拖拽配置，支持问卷创建、投放与数据报表统计。",
+                "tags": [
+                  "React",
+                  "TypeScript",
+                  "AntD",
+                  "react-dnd"
+                ],
+                "wide": false,
+                "icon": "test-01"
               },
               {
-                "icon": "🐦",
-                "title": "Twitter",
-                "url": "#",
-                "bg": "bg-stone-500"
+                "title": "钉钉轻应用",
+                "category": "企业应用",
+                "desc": "独立负责钉钉轻应用开发，基于 Vue 全家桶，包含消息播报、货办调补货工具、条码系统、H5 战报等功能。",
+                "tags": [
+                  "Vue",
+                  "Vuex",
+                  "Axios",
+                  "Webpack"
+                ],
+                "wide": false,
+                "icon": "沃克尔奥神队"
               },
               {
-                "icon": "💬",
-                "title": "微信",
-                "url": "#",
-                "bg": "bg-stone-500"
+                "title": "企业管理业务中台",
+                "category": "中台系统",
+                "desc": "基于 Single-spa 搭建微前端框架，负责框架搭建、权限控制、主题配置及公共依赖包开发。",
+                "tags": [
+                  "Vue",
+                  "Single-spa",
+                  "SystemJS",
+                  "Node"
+                ],
+                "wide": false,
+                "icon": "gfas 仍"
               }
             ]
           }
         },
         {
-          "type": "video-hero",
+          "type": "services",
           "data": {
-            "video": {
-              "url": "/users/cheesyu/assets/vb-test-input-scrub-d1tf3i.mp4",
-              "bytes": 45684
-            },
-            "poster": "/users/cheesyu/assets/vb-test-input-poster-3xln4q.png",
-            "heightVh": 400,
-            "captions": [
+            "heading": "服务fewer股份制a",
+            "subheading": "吉格斯地asdd",
+            "services": [
               {
-                "text": "第一句：抓住来访者的注意力",
-                "from": 0.05,
-                "to": 0.32,
-                "position": "center",
-                "size": "lg",
-                "kicker": ""
+                "title": "服务名㐱",
+                "icon": "✨",
+                "desc": "描述asdfsdaasdfa樭sdfsdf"
+              }
+            ]
+          }
+        },
+        {
+          "type": "about",
+          "data": {
+            "avatar": "🧑‍💻",
+            "bio": "擅长 H5、PC 端应用开发，技术栈以 React Hooks + TypeScript / Vue 全家桶 Webpack 为主。热爱界面设计与用户体验思考，注重性能优化与前端工程化。",
+            "tags": [
+              "React",
+              "Vue",
+              "TypeScript",
+              "Webpack",
+              "微前端",
+              "前端工程化"
+            ],
+            "heading": "个人概述"
+          }
+        },
+        {
+          "type": "contact",
+          "data": {
+            "heading": "联系方式",
+            "subheading": "",
+            "socials": [
+              {
+                "icon": "🔗",
+                "title": "Email",
+                "url": "mailto:chessyu_vip@163.com",
+                "bg": "bg-stone-500"
               },
               {
-                "text": "第二句：展开你的故事",
-                "from": 0.38,
-                "to": 0.62,
-                "position": "center",
-                "size": "lg",
-                "kicker": ""
+                "icon": "🔗",
+                "title": "Phone",
+                "url": "tel:+8613421386191",
+                "bg": "bg-stone-500"
               },
               {
-                "text": "第三句：给出行动的理由",
-                "from": 0.68,
-                "to": 0.86,
-                "position": "center",
-                "size": "lg",
-                "kicker": ""
+                "icon": "🔗",
+                "title": "Blog",
+                "url": "https://chessyu.github.io",
+                "bg": "bg-stone-500"
+              },
+              {
+                "icon": "🔗",
+                "title": "NPM",
+                "url": "https://www.npmjs.com/package/public-tools-cli",
+                "bg": "bg-stone-500"
               }
             ],
-            "fallbackHeading": "标题",
-            "fallbackSub": "",
-            "cta": {
-              "label": "了解更多",
-              "href": "#next"
-            }
+            "showAvailability": true
           }
         }
       ]
@@ -367,12 +464,12 @@
     {
       "id": "test1",
       "path": "/test1",
-      "title": "aslkd faslkjf lqwke rjqwe",
+      "title": "test1",
       "blocks": [
         {
           "type": "hero",
           "data": {
-            "name": "我的作品",
+            "name": "我的作品-test1",
             "title": "Creative Designer & Developer",
             "subtitle": "CREATIVE DESIGNER & DEVELOPER",
             "tagline": "用设计讲述故事，用代码创造体验。专注于品牌视觉、UI/UX 设计与创意动效。",
