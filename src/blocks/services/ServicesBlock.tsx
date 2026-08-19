@@ -14,7 +14,7 @@ export function ServicesBlockComponent({ data, theme }: BlockProps<ServicesBlock
         {d.subheading && (
           <p className={`text-center mb-16 text-lg ${isDark ? 'text-stone-500' : 'text-stone-500'}`}>{d.subheading}</p>
         )}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
           {d.services.map((s, i) => (
             <AnimatedContent key={s.title} direction="horizontal" distance={i % 2 === 0 ? -60 : 60} delay={i * 100}>
               <div className={`p-8 text-center ${isDark ? 'glass-card-dark' : 'glass-card'}`}>

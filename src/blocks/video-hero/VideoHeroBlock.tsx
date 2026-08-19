@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { BlockProps } from '../types'
 import type { VideoHeroBlockData } from './types'
-import { STATIC_FALLBACK_QUERY } from './staticFallback'
+import { STATIC_FALLBACK_QUERY, REDUCE_QUERY } from './staticFallback'
 import { useVideoLoader } from './useVideoLoader'
 import { useVideoScrub } from './useVideoScrub'
 
@@ -30,6 +30,21 @@ function useIsCinematic(): boolean {
   return isCinematic
 }
 
+/** reduce 档单独判断：降级 hero 是否保留滚动字幕动画（reduce 用户连这个也不做） */
+function usePrefersReducedMotion(): boolean {
+  const [reduced, setReduced] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia(REDUCE_QUERY).matches,
+  )
+  useEffect(() => {
+    const mql = window.matchMedia(REDUCE_QUERY)
+    const apply = () => setReduced(mql.matches)
+    apply()
+    mql.addEventListener('change', apply)
+    return () => mql.removeEventListener('change', apply)
+  }, [])
+  return reduced
+}
+
 const POSITION_CLASS: Record<string, string> = {
   center: 'left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center',
   left: 'left-[8%] top-1/2 -translate-y-1/2 text-left',
@@ -46,6 +61,7 @@ const SIZE_CLASS: Record<string, string> = {
 export function VideoHeroBlockComponent({ data }: BlockProps<VideoHeroBlockData>) {
   const d = data
   const isCinematic = useIsCinematic()
+  const prefersReduced = usePrefersReducedMotion()
 
   // 电影模式下才加载视频（降级档 0 视频字节）。
   // 会话内 blob 预览优先（远端路径刚上传还未部署，fetch 必 404）。
@@ -133,30 +149,7 @@ export function VideoHeroBlockComponent({ data }: BlockProps<VideoHeroBlockData>
   /* ---------- 静态降级 hero（五档门 + 加载失败共用） ---------- */
 
   if (!isCinematic || videoStatus.state === 'error') {
-    return (
-      <section className="relative min-h-screen overflow-hidden bg-stone-900">
-        {/* 海报底图（为空时纯深色底，避免 img src="" 警告） */}
-        {posterSrc ? (
-          <img src={posterSrc} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover" />
-        ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-stone-900 via-stone-800 to-warm-900/40" />
-        )}
-        <div className="vh-global-scrim absolute inset-0" />
-        {d.overlayTint && <div className="absolute inset-0" style={{ background: d.overlayTint }} />}
-
-        <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 text-center">
-          <h1 className="vh-text-shadow max-w-4xl font-display text-[clamp(2.5rem,8vw,6rem)] font-bold leading-tight text-white">
-            {d.fallbackHeading}
-          </h1>
-          {d.fallbackSub && (
-            <p className="vh-text-shadow mt-6 max-w-2xl text-base sm:text-lg leading-relaxed text-white/85">
-              {d.fallbackSub}
-            </p>
-          )}
-          {d.cta && <div className="mt-10">{ctaButton}</div>}
-        </div>
-      </section>
-    )
+    return <StaticHero d={d} posterSrc={posterSrc} ctaButton={ctaButton} animate={!prefersReduced} />
   }
 
   /* ---------- 电影模式 ---------- */
@@ -252,6 +245,137 @@ export function VideoHeroBlockComponent({ data }: BlockProps<VideoHeroBlockData>
           text-shadow: 0 1px 2px rgba(5,5,10,0.95), 0 3px 12px rgba(5,5,10,0.78), 0 10px 44px rgba(5,5,10,0.8);
         }
       `}</style>
+    </div>
+  )
+}
+
+/**
+ * 静态降级 hero — 0 视频字节，但保留滚动电影感：
+ * 首屏是 fallback 标题（p=0），随滚动逐条淡入字幕带，最后一屏 CTA 淡入。
+ * 结构与电影模式同构（外层轨道 + 内层 sticky stage），复用 useVideoScrub 的
+ * 字幕/CTA 更新链路——传空 videoRef，seek 分支天然短路。
+ * reduce 用户（animate=false）退回纯静态单屏（无滚动动画）。
+ */
+function StaticHero({ d, posterSrc, ctaButton, animate }: {
+  d: VideoHeroBlockData
+  posterSrc: string
+  ctaButton: React.ReactNode
+  animate: boolean
+}) {
+  const trackRef = useRef<HTMLDivElement>(null)
+  const titleRef = useRef<HTMLDivElement>(null)
+  const ctaRef = useRef<HTMLDivElement>(null)
+  const captionEls = useRef<Map<number, HTMLDivElement>>(new Map())
+  const setCaptionEl = useCallback((i: number) => (el: HTMLDivElement | null) => {
+    if (el) captionEls.current.set(i, el)
+    else captionEls.current.delete(i)
+  }, [])
+  // 空 ref：useVideoScrub 的 requestSeek 有 !video 守卫，只驱动字幕 + CTA
+  const noVideo = useRef<HTMLVideoElement>(null)
+
+  // 滚动轨道高度：首屏 hero + 每条字幕约 0.6 屏 + 结尾 CTA 一屏（与电影模式 heightVh 解耦）
+  const trackVh = Math.min(d.heightVh, 120 + d.captions.length * 60)
+
+  useVideoScrub({
+    trackRef,
+    videoRef: noVideo,
+    captions: d.captions,
+    captionEls,
+    ctaRef,
+    titleRef,
+    heightVh: trackVh,
+  })
+
+  const stage = (
+    <>
+      {/* 海报底图（为空时纯深色底，避免 img src="" 警告） */}
+      {posterSrc ? (
+        <img src={posterSrc} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover" />
+      ) : (
+        <div className="absolute inset-0 bg-gradient-to-br from-stone-900 via-stone-800 to-warm-900/40" />
+      )}
+      <div className="vh-global-scrim absolute inset-0" />
+      {d.overlayTint && <div className="absolute inset-0" style={{ background: d.overlayTint }} />}
+    </>
+  )
+
+  const scrimStyle = (
+    <style>{`
+      .vh-global-scrim {
+        background: radial-gradient(ellipse 120% 90% at 50% 45%, rgba(10,10,18,0) 35%, rgba(10,10,18,0.62) 100%);
+      }
+      .vh-text-shadow {
+        text-shadow: 0 1px 2px rgba(5,5,10,0.95), 0 3px 12px rgba(5,5,10,0.78), 0 10px 44px rgba(5,5,10,0.8);
+      }
+    `}</style>
+  )
+
+  // reduce：纯静态单屏（标题 + CTA 直接可见）
+  if (!animate) {
+    return (
+      <section className="relative h-[100svh] overflow-hidden bg-stone-900">
+        {stage}
+        <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center">
+          <h1 className="vh-text-shadow max-w-4xl font-display text-[clamp(2.5rem,8vw,6rem)] font-bold leading-tight text-white">
+            {d.fallbackHeading}
+          </h1>
+          {d.fallbackSub && (
+            <p className="vh-text-shadow mt-6 max-w-2xl text-base sm:text-lg leading-relaxed text-white/85">
+              {d.fallbackSub}
+            </p>
+          )}
+          {d.cta && <div className="mt-10">{ctaButton}</div>}
+        </div>
+        {scrimStyle}
+      </section>
+    )
+  }
+
+  // 前四档降级（尺寸/触屏）：静态海报 + 滚动字幕带 + 渐入 CTA
+  return (
+    <div ref={trackRef} style={{ height: `${trackVh}vh` }} className="relative bg-stone-900">
+      <div className="sticky top-0 h-[100svh] overflow-hidden">
+        {stage}
+
+        {/* 首屏 fallback 标题：p 进入第一段字幕前淡出（scrub 直写 opacity） */}
+        <div ref={titleRef} className="absolute inset-0 z-10 flex flex-col items-center justify-center px-6 text-center">
+          <h1 className="vh-text-shadow max-w-4xl font-display text-[clamp(2.5rem,8vw,6rem)] font-bold leading-tight text-white">
+            {d.fallbackHeading}
+          </h1>
+          {d.fallbackSub && (
+            <p className="vh-text-shadow mt-6 max-w-2xl text-base sm:text-lg leading-relaxed text-white/85">
+              {d.fallbackSub}
+            </p>
+          )}
+        </div>
+
+        {/* 字幕带（scrub 直写 opacity；首条 from 前不可见） */}
+        <div className="absolute inset-0 z-10">
+          {d.captions.map((cap, i) => (
+            <div
+              key={i}
+              ref={setCaptionEl(i)}
+              className={`vh-caption absolute max-w-[80vw] px-6 text-white ${POSITION_CLASS[cap.position]} ${SIZE_CLASS[cap.size]}`}
+              style={{ opacity: 0 }}
+            >
+              {cap.kicker && (
+                <span className="vh-kicker mb-4 inline-block rounded-full bg-black/45 backdrop-blur-sm px-4 py-1.5 text-xs tracking-[0.25em] text-white/90">
+                  {cap.kicker}
+                </span>
+              )}
+              <span className="vh-text-shadow block whitespace-pre-wrap">{cap.text}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* 结尾静置 CTA（scrub 直写 opacity） */}
+        {d.cta && (
+          <div ref={ctaRef} className="absolute bottom-[14%] left-1/2 z-10 -translate-x-1/2" style={{ opacity: 0 }}>
+            {ctaButton}
+          </div>
+        )}
+      </div>
+      {scrimStyle}
     </div>
   )
 }

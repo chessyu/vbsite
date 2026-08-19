@@ -11,6 +11,7 @@ import { useEditor, clearDraft } from './state/useEditor'
 import { SpaceMetaForm } from './components/SpaceMetaForm'
 import { ThemeForm } from './components/ThemeForm'
 import { PageStructureForm } from './components/PageStructureForm'
+import { AIImportPanel } from './components/AIImportPanel'
 import { PreviewFrame } from './components/PreviewFrame'
 
 /**
@@ -177,7 +178,7 @@ function EditWorkbench({ userId, token, remaining }: {
           </div>
 
           {/* 页面切换（结构 tab 内） */}
-          {tab === 'structure' && state.draft.pages.length > 1 && (
+          {tab === 'structure' && (
             <div className="shrink-0 border-b border-stone-100 bg-white px-3 py-1.5">
               <select
                 value={pageId}
@@ -198,14 +199,25 @@ function EditWorkbench({ userId, token, remaining }: {
             {tab === 'space' && <SpaceMetaForm />}
             {tab === 'theme' && <ThemeForm />}
             {tab === 'structure' && (
-              <PageStructureForm pageId={pageId} blockIdx={blockIdx} onSelect={setBlockIdx} />
+              <>
+                <AIImportPanel pageId={pageId} />
+                <PageStructureForm pageId={pageId} blockIdx={blockIdx} onSelect={setBlockIdx} />
+              </>
             )}
           </div>
         </aside>
 
         {/* 右侧预览 */}
         <main className="min-w-0 flex-1">
-          <PreviewFrame config={state.draft} pageId={pageId} />
+          <PreviewFrame
+            config={state.draft}
+            pageId={pageId}
+            blockIdx={blockIdx}
+            onPageChange={id => {
+              setPageId(id)
+              setBlockIdx(-1)
+            }}
+          />
         </main>
       </div>
     </div>

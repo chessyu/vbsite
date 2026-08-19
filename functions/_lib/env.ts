@@ -1,4 +1,4 @@
-/** 环境变量解析 + 默认值；必填项缺失时抛出（返回 500，避免静默裸奔） */
+/** 环境变量解析 + 默认值；必填项缺失时抛出（返回 500，避免静默裸奔）。LLM 三项为可选，空串表示未配置。 */
 
 export interface AdminEnv {
   ADMIN_PASSWORD: string
@@ -10,6 +10,10 @@ export interface AdminEnv {
   GITHUB_BRANCH: string
   MAX_ASSET_MB: number
   VIDEO_MAX_MB: number
+  /** LLM（OpenAI 兼容接口），可选 — 未配置时 ai-analyze 端点返回 501 */
+  LLM_BASE_URL: string
+  LLM_API_KEY: string
+  LLM_MODEL: string
 }
 
 export function getEnv(context: { env: Record<string, unknown> }): AdminEnv {
@@ -37,6 +41,9 @@ export function getEnv(context: { env: Record<string, unknown> }): AdminEnv {
     GITHUB_BRANCH: (env.GITHUB_BRANCH as string) || 'main',
     MAX_ASSET_MB: optional('MAX_ASSET_MB', 10),
     VIDEO_MAX_MB: optional('VIDEO_MAX_MB', 50),
+    LLM_BASE_URL: (env.LLM_BASE_URL as string) || '',
+    LLM_API_KEY: (env.LLM_API_KEY as string) || '',
+    LLM_MODEL: (env.LLM_MODEL as string) || '',
   }
 }
 

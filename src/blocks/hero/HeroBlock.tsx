@@ -118,7 +118,7 @@ export function HeroBlockComponent({ data, theme, index }: BlockProps<HeroBlockD
         {/* 主标题：行遮罩揭示（yPercent 110 → 0，power4.out） */}
         <SplitText
           text={d.name}
-          className={`font-display text-[clamp(3.5rem,10vw,9rem)] leading-[0.95] font-bold tracking-tight mb-8 justify-center ${
+          className={`font-display text-[clamp(3.5rem,10vw,9rem)] leading-[1.1] font-bold tracking-tight mb-8 justify-center ${
             isDark
               ? 'bg-gradient-to-b from-warm-200 via-warm-400 to-accent-pink-400 bg-clip-text text-transparent'
               : 'bg-gradient-to-b from-warm-500 via-warm-600 to-accent-pink-600 bg-clip-text text-transparent'

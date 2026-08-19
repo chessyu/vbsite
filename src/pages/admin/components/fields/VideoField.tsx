@@ -86,7 +86,8 @@ export function VideoField({ label, hint, userId, token, value, onChange, poster
       // 3. 回填（会话内用本地 blob 预览，远端文件刚 commit 还未部署）
       const localPreview = URL.createObjectURL(video)
       const localPosterPreview = URL.createObjectURL(poster)
-      // poster 远端路径也登记会话映射（供 avatar/gallery 等通用图片渲染路径替换）
+      // 远端路径登记会话映射（预览 iframe 渲染前替换为本地 blob，避免远端未部署 404）
+      if (videoUploaded) registerSessionAsset(videoUploaded.path, localPreview)
       if (posterUploaded) registerSessionAsset(posterUploaded.path, localPosterPreview)
       onChange({
         url: videoUploaded?.path ?? '',

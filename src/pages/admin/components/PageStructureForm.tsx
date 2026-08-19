@@ -44,6 +44,18 @@ export function PageStructureForm({ pageId, blockIdx, onSelect }: {
 
   return (
     <div className="space-y-4">
+      {/* 页面标题 */}
+      <div className="rounded-xl border border-stone-200 bg-white p-3">
+        <label className="mb-2 block text-xs font-medium text-stone-600">页面标题（浏览器 tab 显示）</label>
+        <input
+          type="text"
+          value={page.title}
+          onChange={e => dispatch({ type: 'SET_PAGE_META', pageIdx, patch: { title: e.target.value } })}
+          placeholder={page.id}
+          className="w-full rounded-lg border border-stone-300 bg-white px-3 py-1.5 text-xs text-stone-800 placeholder:text-stone-300 focus:border-stone-500 focus:outline-none"
+        />
+      </div>
+
       {/* block 列表 */}
       <div>
         <div className="mb-1 flex items-center justify-between">

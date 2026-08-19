@@ -32,3 +32,12 @@ export type ApiErrorCode =
   | 'GITHUB_ERROR'
   | 'NOT_FOUND'
   | 'RATE_LIMITED'
+  | 'LLM_NOT_CONFIGURED'
+  | 'LLM_ERROR'
+
+/** ai-analyze 返回的单个区块 patch（前端确认后通过 UPDATE_BLOCK_DATA 整块替换） */
+export interface AiPatch {
+  index: number
+  type: string
+  data: Record<string, unknown>
+}

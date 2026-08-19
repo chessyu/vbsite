@@ -25,11 +25,25 @@ export default function PreviewPage() {
         type?: string
         config?: SpaceConfig
         pageId?: string
+        blockIndex?: number
         assets?: Record<string, string>
       }
       if (data?.type === 'space-config' && data.config) {
         if (data.assets) setAssetMap(data.assets)
         setPageId({ config: data.config, pageId: data.pageId ?? 'home' })
+        // config 更新后页高常变化（增删 block/内容长度），ScrollTrigger 不刷新则触发点陈旧，
+        // 入场动画卡在初始隐藏/偏移态（表现为元素错位、像缺 padding）。等渲染稳定再刷新。
+        setTimeout(() => ScrollTrigger.refresh(), 300)
+        return
+      }
+      // 编辑器选中区块 → 预览滚动到对应位置（等 config 推送的 150ms debounce + 布局稳定）
+      if (data?.type === 'scroll-to-block' && typeof data.blockIndex === 'number') {
+        const index = data.blockIndex
+        setTimeout(() => {
+          document
+            .querySelector(`[data-block-index="${index}"]`)
+            ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }, 250)
         return
       }
       // 父窗口视口切换（桌面 ⇄ 移动）：外层容器宽度变化让本页布局重排，
@@ -58,17 +72,27 @@ export default function PreviewPage() {
   return <PreviewContent config={resolved} pageId={config.pageId} />
 }
 
-/** 深度替换 config 中的资源路径（string 以 /users/ 开头且在映射中） */
+/**
+ * 深度处理 config：
+ * - 替换资源路径（string 以 /users/ 开头且在映射中 → 本地 blob 预览）
+ * - 剥离 video-hero 的会话级 previewUrl/posterPreviewUrl —— blob URL 只在创建它的
+ *   会话有效，草稿恢复等场景下的 stale blob 会让 VideoHero 优先取它而渲染失败；
+ *   统一走上面的路径映射（上传时 registerSessionAsset 登记），机制与图片一致。
+ */
 function applyAssetMap(value: unknown, map: Record<string, string>): SpaceConfig {
-  const visit = (node: unknown): unknown => {
+  const visit = (node: unknown, parentKey?: string): unknown => {
     if (typeof node === 'string') {
       return node.startsWith('/users/') ? map[node] ?? node : node
     }
-    if (Array.isArray(node)) return node.map(visit)
+    if (Array.isArray(node)) return node.map(item => visit(item, parentKey))
     if (node && typeof node === 'object') {
-      const out: Record<string, unknown> = {}
-      for (const [k, v] of Object.entries(node)) out[k] = visit(v)
-      return out
+      const obj = { ...(node as Record<string, unknown>) }
+      // video.previewUrl（video 对象上的）与 posterPreviewUrl（block data 上的）是会话级 blob，
+      // 跨会话必失效 → 一律剥离，统一走上面的路径映射
+      if (parentKey === 'video') delete obj.previewUrl
+      delete obj.posterPreviewUrl
+      for (const k of Object.keys(obj)) obj[k] = visit(obj[k], k)
+      return obj
     }
     return node
   }

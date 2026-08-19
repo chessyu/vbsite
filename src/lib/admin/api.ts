@@ -83,6 +83,26 @@ export const spaceApi = {
       token,
       body: buildFormData(files),
     }),
+
+  /**
+   * 上传文档（md/txt 文件，或前端已抽取的纯文本如 pdf）调 LLM 分析，
+   * 返回当前页区块的 patches + 分配说明（用户确认后前端逐块应用）。
+   */
+  aiAnalyze: (
+    userId: string,
+    input: { file?: File; text?: string; blocks: Array<{ type: string; data: unknown }> },
+    token: string,
+  ) => {
+    const form = new FormData()
+    if (input.file) form.append('file', input.file, input.file.name)
+    if (input.text) form.append('text', input.text)
+    form.append('blocks', JSON.stringify(input.blocks))
+    return request<{ patches: AiPatch[]; notes: string }>(`/api/space/${encodeURIComponent(userId)}/ai-analyze`, {
+      method: 'POST',
+      token,
+      body: form,
+    })
+  },
 }
 
 function buildFormData(files: File[]): FormData {
@@ -92,5 +112,5 @@ function buildFormData(files: File[]): FormData {
 }
 
 // ---- DTO 类型（与 functions/_lib/types.ts 保持一致，type-only 引入避免运行时耦合）----
-import type { AdminUserSummary, AssetUploadResult } from '../../../functions/_lib/types'
-export type { AdminUserSummary, AssetUploadResult }
+import type { AdminUserSummary, AssetUploadResult, AiPatch } from '../../../functions/_lib/types'
+export type { AdminUserSummary, AssetUploadResult, AiPatch }

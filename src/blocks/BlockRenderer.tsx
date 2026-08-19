@@ -20,8 +20,11 @@ export function BlockRenderer({ declaration, theme, index }: BlockRendererProps)
 
   const Component = definition.component
   return (
-    <ErrorBoundary blockType={declaration.type} theme={theme}>
-      <Component data={declaration.data} theme={theme} index={index} />
-    </ErrorBoundary>
+    // 无样式包裹层：data-block-index 供编辑器预览滚动定位（block 均为块级 section，多一层 div 不影响布局/sticky）
+    <div data-block-index={index}>
+      <ErrorBoundary blockType={declaration.type} theme={theme}>
+        <Component data={declaration.data} theme={theme} index={index} />
+      </ErrorBoundary>
+    </div>
   )
 }

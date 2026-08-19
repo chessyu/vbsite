@@ -1,48 +1,77 @@
-import { TextField, ColorField } from './fields'
+import { themePresets, matchPreset } from '@/lib/themePresets'
 import { useEditor } from '../state/useEditor'
 
-/** 主题风格编辑 */
+/**
+ * 主题选择 — 预设套系直接点选（不做自定义表单）。
+ * 点击整包覆盖 theme；当前配置与任何预设不一致时提示「自定义」并要求确认覆盖。
+ */
 export function ThemeForm() {
   const { state, dispatch } = useEditor()
   if (!state) return null
   const { theme } = state.draft
-  const patch = (p: Partial<typeof theme>) => dispatch({ type: 'SET_THEME', patch: p })
+  const activePreset = matchPreset(theme)
 
   return (
     <div className="space-y-3">
-      <div className="flex gap-2">
-        {(['light', 'dark'] as const).map(mode => (
-          <button
-            key={mode}
-            type="button"
-            onClick={() => patch({ mode })}
-            className={`flex-1 rounded-lg border px-3 py-2 text-xs transition-colors ${
-              theme.mode === mode
-                ? 'border-stone-800 bg-stone-800 text-stone-50'
-                : 'border-stone-300 bg-white text-stone-600 hover:bg-stone-50'
-            }`}
-          >
-            {mode === 'light' ? '☀️ 浅色' : '🌙 深色'}
-          </button>
-        ))}
+      {!activePreset && (
+        <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] text-amber-700">
+          当前为自定义主题（或旧配置），选择预设将整包覆盖。
+        </p>
+      )}
+
+      <div className="grid grid-cols-2 gap-2">
+        {themePresets.map(preset => {
+          const isActive = activePreset?.id === preset.id
+          const bg = preset.theme.background
+          const bgStyle = bg.startsWith('#') || bg.startsWith('linear-gradient')
+            ? { background: bg }
+            : undefined
+          return (
+            <button
+              key={preset.id}
+              type="button"
+              onClick={() => {
+                if (!isActive && !confirm(`切换到「${preset.name}」主题？将覆盖当前主题配置。`)) return
+                dispatch({ type: 'SET_THEME', patch: { ...preset.theme } })
+              }}
+              className={`rounded-xl border p-2 text-left transition-all ${
+                isActive
+                  ? 'border-stone-800 bg-stone-800/[0.06] shadow-sm'
+                  : 'border-stone-200 bg-white hover:border-stone-400'
+              }`}
+            >
+              {/* 背景预览条（CSS 值直接渲染） */}
+              <div
+                className="mb-1.5 h-10 w-full rounded-lg border border-black/5"
+                style={bgStyle}
+              >
+                <div className="flex h-full items-center justify-center gap-1 px-1.5">
+                  {preset.swatch.slice(1, 3).map(c => (
+                    <span
+                      key={c}
+                      className="h-2.5 w-2.5 rounded-full border border-black/10"
+                      style={{ background: c }}
+                    />
+                  ))}
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className={`text-xs ${isActive ? 'font-semibold text-stone-900' : 'text-stone-700'}`}>
+                  {preset.name}
+                </span>
+                <span className="text-[10px] text-stone-400" aria-hidden>
+                  {preset.theme.mode === 'light' ? '☀️' : '🌙'}
+                </span>
+              </div>
+            </button>
+          )
+        })}
       </div>
 
-      <TextField
-        label="背景（CSS 值，支持渐变）"
-        value={theme.background}
-        onChange={v => patch({ background: v })}
-        placeholder="linear-gradient(...) 或 #fafaf9"
-      />
-      <TextField label="主文字色（Tailwind 类）" value={theme.textColor} onChange={v => patch({ textColor: v })} placeholder="text-stone-900" />
-      <TextField label="次级文字色（Tailwind 类）" value={theme.subTextColor} onChange={v => patch({ subTextColor: v })} placeholder="text-stone-600" />
-      <TextField label="弱化文字色（Tailwind 类）" value={theme.mutedTextColor} onChange={v => patch({ mutedTextColor: v })} placeholder="text-stone-400" />
-      <TextField label="主渐变（CSS gradient）" value={theme.primaryGradient} onChange={v => patch({ primaryGradient: v })} placeholder="linear-gradient(135deg, #f59e0b, #ec4899)" />
-      <ColorField
-        label="极光色（逗号分隔，可空）"
-        value={theme.auroraColors?.[0] ?? ''}
-        onChange={v => patch({ auroraColors: v ? [v] : undefined })}
-        hint="仅 hero 启用 Aurora 时生效"
-      />
+      <p className="text-[11px] leading-relaxed text-stone-400">
+        共 {themePresets.length} 套预设（{themePresets.filter(p => p.theme.mode === 'light').length} 亮 /{' '}
+        {themePresets.filter(p => p.theme.mode === 'dark').length} 暗），选中后预览即时生效。
+      </p>
     </div>
   )
 }

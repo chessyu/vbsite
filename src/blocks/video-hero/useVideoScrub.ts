@@ -28,6 +28,8 @@ export interface VideoScrubOptions {
   ctaRef: RefObject<HTMLElement | null>
   /** 滚动轨道高度（vh），用于把缓入缓出边沿换算成进度单位 */
   heightVh: number
+  /** 可选：静态降级 hero 的首屏标题（第一段字幕进入前淡出）。电影模式不传 */
+  titleRef?: RefObject<HTMLElement | null>
 }
 
 /** 缓入缓出边沿 ≈ 20vh（换算成 0–1 进度） */
@@ -40,7 +42,7 @@ function smoothstep(p: number, e0: number, e1: number): number {
 }
 
 export function useVideoScrub(options: VideoScrubOptions) {
-  const { trackRef, videoRef, captions, captionEls, ctaRef, heightVh } = options
+  const { trackRef, videoRef, captions, captionEls, ctaRef, heightVh, titleRef } = options
   // 最新 captions 存 ref：字幕文字在编辑器里频繁变化，避免重建 ScrollTrigger
   const captionsRef = useRef(captions)
   useEffect(() => {
@@ -128,6 +130,13 @@ export function useVideoScrub(options: VideoScrubOptions) {
             // opacity 直写（cta 也参与 delta-gate 语义：值变化极小时浏览器自身去重）
             ctaEl.style.opacity = String(ck)
           }
+        }
+        // 静态降级 hero 的首屏标题：第一条字幕淡入区间反向淡出
+        const title = titleRef?.current
+        if (title) {
+          const firstFrom = caps[0]?.from ?? 0.15
+          const tk = 1 - smoothstep(p, firstFrom * 0.6, firstFrom)
+          ;(title as HTMLElement).style.opacity = String(tk)
         }
       }
 
