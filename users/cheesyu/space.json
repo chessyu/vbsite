@@ -127,15 +127,21 @@
             "socials": [
               {
                 "icon": "💻",
-                "title": "GitHub"
+                "title": "GitHub",
+                "url": "#",
+                "bg": "bg-stone-500"
               },
               {
                 "icon": "🐦",
-                "title": "Twitter"
+                "title": "Twitter",
+                "url": "#",
+                "bg": "bg-stone-500"
               },
               {
                 "icon": "💬",
-                "title": "微信"
+                "title": "微信",
+                "url": "#",
+                "bg": "bg-stone-500"
               }
             ]
           }
@@ -144,10 +150,10 @@
           "type": "video-hero",
           "data": {
             "video": {
-              "url": "/users/cheesyu/videos/vb-test-input-scrub-d1tf3i.mp4",
+              "url": "/users/cheesyu/assets/vb-test-input-scrub-d1tf3i.mp4",
               "bytes": 45684
             },
-            "poster": "/users/cheesyu/images/vb-test-input-poster-3xln4q.png",
+            "poster": "/users/cheesyu/assets/vb-test-input-poster-3xln4q.png",
             "heightVh": 400,
             "captions": [
               {
@@ -219,7 +225,7 @@
               {
                 "title": "科技公司全案设计",
                 "category": "品牌设计",
-                "image": "/users/cheesyu/images/project-branding.jpg",
+                "image": "/users/cheesyu/assets/project-branding.jpg",
                 "desc": "从 Logo 到完整的品牌视觉体系，包含色彩、字体、图标与应用规范。",
                 "tags": [
                   "品牌全案",
@@ -231,7 +237,7 @@
               {
                 "title": "健康追踪 App",
                 "category": "APP 设计",
-                "image": "/users/cheesyu/images/project-healthapp.jpg",
+                "image": "/users/cheesyu/assets/project-healthapp.jpg",
                 "desc": "清新简洁的健康数据可视化界面设计。",
                 "tags": [
                   "UI 设计",
@@ -241,7 +247,7 @@
               {
                 "title": "电商平台重构",
                 "category": "网页设计",
-                "image": "/users/cheesyu/images/project-ecommerce.jpg",
+                "image": "/users/cheesyu/assets/project-ecommerce.jpg",
                 "desc": "现代化电商体验设计，提升转化率 35%。",
                 "tags": [
                   "电商",
@@ -257,7 +263,7 @@
               {
                 "title": "企业级组件库",
                 "category": "系统设计",
-                "image": "/users/cheesyu/images/project-designsystem.jpg",
+                "image": "/users/cheesyu/assets/project-designsystem.jpg",
                 "desc": "包含 200+ 组件的完整设计系统。",
                 "tags": [
                   "设计系统",
@@ -332,21 +338,25 @@
               {
                 "icon": "💻",
                 "title": "GitHub",
+                "url": "#",
                 "bg": "hover:bg-warm-500/20 hover:text-warm-400"
               },
               {
                 "icon": "🏀",
                 "title": "Dribbble",
+                "url": "#",
                 "bg": "hover:bg-accent-pink-500/20 hover:text-accent-pink-400"
               },
               {
                 "icon": "🎯",
                 "title": "Behance",
+                "url": "#",
                 "bg": "hover:bg-violet-500/20 hover:text-violet-400"
               },
               {
                 "icon": "💬",
                 "title": "微信",
+                "url": "#",
                 "bg": "hover:bg-warm-500/20 hover:text-warm-400"
               }
             ]
@@ -388,7 +398,7 @@
               {
                 "title": "科技公司全案设计",
                 "category": "品牌设计",
-                "image": "/users/cheesyu/images/project-branding.jpg",
+                "image": "/users/cheesyu/assets/project-branding.jpg",
                 "desc": "从 Logo 到完整的品牌视觉体系，包含色彩、字体、图标与应用规范。",
                 "tags": [
                   "品牌全案",
@@ -400,7 +410,7 @@
               {
                 "title": "健康追踪 App",
                 "category": "APP 设计",
-                "image": "/users/cheesyu/images/project-healthapp.jpg",
+                "image": "/users/cheesyu/assets/project-healthapp.jpg",
                 "desc": "清新简洁的健康数据可视化界面设计。",
                 "tags": [
                   "UI 设计",
@@ -410,7 +420,7 @@
               {
                 "title": "电商平台重构",
                 "category": "网页设计",
-                "image": "/users/cheesyu/images/project-ecommerce.jpg",
+                "image": "/users/cheesyu/assets/project-ecommerce.jpg",
                 "desc": "现代化电商体验设计，提升转化率 35%。",
                 "tags": [
                   "电商",
@@ -426,7 +436,7 @@
               {
                 "title": "企业级组件库",
                 "category": "系统设计",
-                "image": "/users/cheesyu/images/project-designsystem.jpg",
+                "image": "/users/cheesyu/assets/project-designsystem.jpg",
                 "desc": "包含 200+ 组件的完整设计系统。",
                 "tags": [
                   "设计系统",
@@ -501,21 +511,25 @@
               {
                 "icon": "💻",
                 "title": "GitHub",
+                "url": "#",
                 "bg": "hover:bg-warm-500/20 hover:text-warm-400"
               },
               {
                 "icon": "🏀",
                 "title": "Dribbble",
+                "url": "#",
                 "bg": "hover:bg-accent-pink-500/20 hover:text-accent-pink-400"
               },
               {
                 "icon": "🎯",
                 "title": "Behance",
+                "url": "#",
                 "bg": "hover:bg-violet-500/20 hover:text-violet-400"
               },
               {
                 "icon": "💬",
                 "title": "微信",
+                "url": "#",
                 "bg": "hover:bg-warm-500/20 hover:text-warm-400"
               }
             ]
